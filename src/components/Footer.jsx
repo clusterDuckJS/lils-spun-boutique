@@ -40,8 +40,8 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-brand-champagne shrink-0" />
-                <a href="mailto:concierge@lilsspunboutique.com" className="hover:text-brand-champagne transition-colors">
-                  concierge@lilsspunboutique.com
+                <a href="mailto:lilsspunboutique@gmail.com" className="hover:text-brand-champagne transition-colors">
+                  lilsspunboutique@gmail.com
                 </a>
               </div>
             </div>
@@ -49,8 +49,9 @@ export default function Footer() {
             {/* Social media links */}
             <div className="flex items-center gap-3 pt-2">
               <a
-                href="#instagram"
-                onClick={(e) => e.preventDefault()}
+                href="https://www.instagram.com/lils.spunboutique/"
+                target="_blank"
+                rel="noopener noreferrer"
                 aria-label="Instagram"
                 className="w-9 h-9 rounded-full bg-brand-navy-light/60 border border-brand-champagne/30 flex items-center justify-center text-brand-ivory hover:text-brand-champagne hover:border-brand-champagne transition-all"
               >
@@ -61,18 +62,13 @@ export default function Footer() {
                 </svg>
               </a>
               <a
-                href="#facebook"
-                onClick={(e) => e.preventDefault()}
-                aria-label="Facebook"
-                className="w-9 h-9 rounded-full bg-brand-navy-light/60 border border-brand-champagne/30 flex items-center justify-center text-brand-ivory hover:text-brand-champagne hover:border-brand-champagne transition-all"
+                href="https://www.instagram.com/lils.spunboutique/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[11px] tracking-wider text-brand-champagne/80 hover:text-brand-champagne transition-colors font-serif italic"
               >
-                <svg className="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
+                @lils.spunboutique
               </a>
-              <span className="text-[11px] tracking-wider text-brand-champagne/80 pl-1 font-serif italic">
-                @lilsspunboutique
-              </span>
             </div>
           </div>
 

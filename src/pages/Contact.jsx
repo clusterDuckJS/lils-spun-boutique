@@ -123,8 +123,31 @@ export default function Contact() {
               <div>
                 <strong className="text-brand-ivory block font-medium">Email Inquiries</strong>
                 <p className="mt-0.5 text-brand-ivory/80">
-                  <a href="mailto:concierge@lilsspunboutique.com" className="hover:text-brand-champagne transition-colors">
-                    concierge@lilsspunboutique.com
+                  <a href="mailto:lilsspunboutique@gmail.com" className="hover:text-brand-champagne transition-colors">
+                    lilsspunboutique@gmail.com
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3.5">
+              <div className="w-5 h-5 flex items-center justify-center text-brand-champagne shrink-0 mt-0.5">
+                <svg className="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </div>
+              <div>
+                <strong className="text-brand-ivory block font-medium">Instagram</strong>
+                <p className="mt-0.5 text-brand-ivory/80">
+                  <a
+                    href="https://www.instagram.com/lils.spunboutique/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-brand-champagne transition-colors"
+                  >
+                    @lils.spunboutique
                   </a>
                 </p>
               </div>

@@ -57,7 +57,7 @@ export default function Returns() {
             How to Request an Exchange
           </h2>
           <ol className="list-decimal list-inside space-y-2 text-brand-text/85 pl-1">
-            <li>Contact our concierge team via our Contact page or at <strong>concierge@lilsspunboutique.com</strong> with your order reference.</li>
+            <li>Contact our concierge team via our Contact page or at <strong>lilsspunboutique@gmail.com</strong> with your order reference.</li>
             <li>Our team will verify eligibility and schedule a reverse courier collection at your doorstep.</li>
             <li>Once inspected at our atelier, your replacement piece or store credit note will be issued within 48 hours.</li>
           </ol>

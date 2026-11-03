@@ -55,7 +55,7 @@ const faqData = [
       },
       {
         q: 'How do I initiate an exchange?',
-        a: 'Simply email concierge@lilsspunboutique.com or message us on WhatsApp with your order number and request. Our team will assist and schedule a return pickup from your address.'
+        a: 'Simply email lilsspunboutique@gmail.com or message us on WhatsApp (+91 97784 65361) with your order number and request. Our team will assist and schedule a return pickup from your address.'
       }
     ]
   }

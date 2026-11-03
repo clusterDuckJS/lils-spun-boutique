@@ -54,7 +54,7 @@ export default function LegalPage() {
             <section className="space-y-2">
               <h2 className="font-serif text-lg font-medium text-brand-navy">4. Contacting Our Concierge</h2>
               <p>
-                If you have inquiries regarding your personal data or wish to update your records, please contact us at <strong>concierge@lilsspunboutique.com</strong> or call <strong>+91 97474 46174</strong>.
+                If you have inquiries regarding your personal data or wish to update your records, please contact us at <strong>lilsspunboutique@gmail.com</strong> or call <strong>+91 97474 46174</strong>.
               </p>
             </section>
           </>
