@@ -1,13 +1,19 @@
 import React from 'react';
-import { HashRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { AdminAuthProvider } from './context/AdminAuthContext';
 import { ToastProvider } from './context/ToastContext';
 import { WishlistProvider } from './context/WishlistContext';
 import { CartProvider } from './context/CartContext';
+import { ProductProvider } from './context/ProductContext';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import WhatsAppButton from './components/WhatsAppButton';
 import ScrollToTop from './components/ScrollToTop';
+import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 
-// Pages
+// Storefront Pages
 import Home from './pages/Home';
 import Collection from './pages/Collection';
 import ProductDetails from './pages/ProductDetails';
@@ -23,44 +29,109 @@ import Returns from './pages/Returns';
 import LegalPage from './pages/LegalPage';
 import NotFound from './pages/NotFound';
 
+// Auth & Patron Pages
+import Login from './pages/Login';
+import SignUp from './pages/SignUp';
+import ForgotPassword from './pages/ForgotPassword';
+import Account from './pages/Account';
+
+// Admin Portal Pages
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminDashboard from './pages/admin/AdminDashboard';
+
+function AppLayout() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
+  return (
+    <div className="min-h-screen flex flex-col bg-brand-ivory text-brand-text">
+      {/* Show Customer Storefront Header on non-admin routes */}
+      {!isAdminRoute && <Header />}
+
+      {/* Main Viewport */}
+      <main className="flex-1">
+        <Routes>
+          {/* Public Storefront Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/collections/:category" element={<Collection />} />
+          <Route path="/products/:slug" element={<ProductDetails />} />
+          <Route path="/search" element={<Search />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/checkout" element={<DemoCheckout />} />
+          
+          {/* Auth & Patron Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signin" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/register" element={<SignUp />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Management Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/*"
+            element={
+              <AdminRoute>
+                <AdminDashboard />
+              </AdminRoute>
+            }
+          />
+
+          {/* Static Boutique Pages */}
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/pages/faqs" element={<FAQ />} />
+          <Route path="/pages/shipping" element={<Shipping />} />
+          <Route path="/pages/returns" element={<Returns />} />
+          <Route path="/pages/privacy" element={<LegalPage />} />
+          <Route path="/pages/terms" element={<LegalPage />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </main>
+
+      {/* Show Customer Storefront Footer on non-admin routes */}
+      {!isAdminRoute && <Footer />}
+
+      {/* Floating WhatsApp Chat Assistant */}
+      {!isAdminRoute && <WhatsAppButton />}
+    </div>
+  );
+}
+
 export default function App() {
   return (
-    <ToastProvider>
-      <WishlistProvider>
-        <CartProvider>
-          <HashRouter>
-            <ScrollToTop />
-            <div className="min-h-screen flex flex-col bg-brand-ivory text-brand-text">
-              {/* Site Header */}
-              <Header />
-
-              {/* Main Content Viewport */}
-              <main className="flex-1">
-                <Routes>
-                  <Route path="/" element={<Home />} />
-                  <Route path="/collections/:category" element={<Collection />} />
-                  <Route path="/products/:slug" element={<ProductDetails />} />
-                  <Route path="/search" element={<Search />} />
-                  <Route path="/wishlist" element={<Wishlist />} />
-                  <Route path="/cart" element={<Cart />} />
-                  <Route path="/checkout" element={<DemoCheckout />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/pages/faqs" element={<FAQ />} />
-                  <Route path="/pages/shipping" element={<Shipping />} />
-                  <Route path="/pages/returns" element={<Returns />} />
-                  <Route path="/pages/privacy" element={<LegalPage />} />
-                  <Route path="/pages/terms" element={<LegalPage />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </main>
-
-              {/* Site Footer */}
-              <Footer />
-            </div>
-          </HashRouter>
-        </CartProvider>
-      </WishlistProvider>
-    </ToastProvider>
+    <ProductProvider>
+      <AuthProvider>
+        <AdminAuthProvider>
+          <ToastProvider>
+            <WishlistProvider>
+              <CartProvider>
+                <HashRouter>
+                  <ScrollToTop />
+                  <AppLayout />
+                </HashRouter>
+              </CartProvider>
+            </WishlistProvider>
+          </ToastProvider>
+        </AdminAuthProvider>
+      </AuthProvider>
+    </ProductProvider>
   );
 }

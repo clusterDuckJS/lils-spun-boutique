@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 const announcements = [
   { text: 'Timeless Traditions, Beautifully Reimagined', link: '/collections/new-arrivals' },
-  { text: 'Discover Our Handcrafted Festive & Occasion Collections', link: '/collections/festive-wear' },
+  { text: 'Explore Ready Made, Churidar Materials, Sarees & Kids Wear', link: '/collections/ready-made' },
   { text: 'Artisanal Weaves & Bespoke Silhouettes', link: '/about' }
 ];
 

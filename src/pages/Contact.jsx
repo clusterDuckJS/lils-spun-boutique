@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Clock, CheckCircle2, Send, Sparkles } from 'lucide-react';
+import { Mail, Phone, MapPin, Clock, CheckCircle2, Send, Sparkles, Loader2, Database, MessageCircle } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
+import { submitContactInquiry } from '../services/inquiryService';
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -11,6 +12,8 @@ export default function Contact() {
     message: ''
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isDbSaved, setIsDbSaved] = useState(false);
   const [errors, setErrors] = useState({});
 
   const validate = () => {
@@ -26,11 +29,21 @@ export default function Contact() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      setIsSubmitted(true);
-    }
+    if (!validate()) return;
+
+    setIsSubmitting(true);
+    const result = await submitContactInquiry({
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      message: `[${formData.subject}] ${formData.message}`
+    });
+    setIsSubmitting(false);
+
+    setIsDbSaved(result.success && !result.simulated);
+    setIsSubmitted(true);
   };
 
   return (
@@ -70,8 +83,8 @@ export default function Contact() {
               <MapPin className="w-5 h-5 text-brand-champagne shrink-0 mt-0.5" />
               <div>
                 <strong className="text-brand-ivory block font-medium">Boutique Address</strong>
-                <p className="mt-0.5 text-brand-ivory/70">
-                  Lils Spun Boutique, Flagship Studio, Kerala, India (Placeholder location)
+                <p className="mt-0.5 text-brand-ivory/80 leading-relaxed">
+                  LILS SPUN BOUTIQUE, SREE RAM GANESH ARCADE, RESIDENCY ROAD, ASRAMAM
                 </p>
               </div>
             </div>
@@ -79,9 +92,28 @@ export default function Contact() {
             <div className="flex items-start gap-3.5">
               <Phone className="w-5 h-5 text-brand-champagne shrink-0 mt-0.5" />
               <div>
-                <strong className="text-brand-ivory block font-medium">Telephone & WhatsApp</strong>
-                <p className="mt-0.5 text-brand-ivory/70">
-                  +91 (Demo Prototype Contact Number)
+                <strong className="text-brand-ivory block font-medium">Phone Support</strong>
+                <p className="mt-0.5 text-brand-ivory/80">
+                  <a href="tel:+919747446174" className="hover:text-brand-champagne transition-colors">
+                    +91 97474 46174
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3.5">
+              <MessageCircle className="w-5 h-5 text-brand-champagne shrink-0 mt-0.5" />
+              <div>
+                <strong className="text-brand-ivory block font-medium">WhatsApp Assistance</strong>
+                <p className="mt-0.5 text-brand-ivory/80">
+                  <a
+                    href="https://wa.me/919778465361?text=Hello%20Lils%20Spun%20Boutique,%20I%20would%20like%20to%20inquire%20about%20your%20collection."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-brand-champagne transition-colors"
+                  >
+                    +91 97784 65361 (Chat on WhatsApp)
+                  </a>
                 </p>
               </div>
             </div>
@@ -90,8 +122,10 @@ export default function Contact() {
               <Mail className="w-5 h-5 text-brand-champagne shrink-0 mt-0.5" />
               <div>
                 <strong className="text-brand-ivory block font-medium">Email Inquiries</strong>
-                <p className="mt-0.5 text-brand-ivory/70">
-                  concierge@lilsspunboutique.com (Demo)
+                <p className="mt-0.5 text-brand-ivory/80">
+                  <a href="mailto:concierge@lilsspunboutique.com" className="hover:text-brand-champagne transition-colors">
+                    concierge@lilsspunboutique.com
+                  </a>
                 </p>
               </div>
             </div>
@@ -108,12 +142,9 @@ export default function Contact() {
             </div>
           </div>
 
-          <div className="pt-4 border-t border-brand-navy-light/60 text-[11px] text-brand-champagne/80">
-            Note: All contact details above are placeholder entries for client presentation and review.
-          </div>
         </div>
 
-        {/* Interactive Demo Contact Form (7 cols on lg) */}
+        {/* Contact Form (7 cols on lg) */}
         <div className="lg:col-span-7 bg-white p-8 sm:p-10 rounded-3xl border border-brand-border shadow-soft">
           {isSubmitted ? (
             <div className="py-12 text-center space-y-4 animate-in fade-in">
@@ -124,7 +155,9 @@ export default function Contact() {
                 Thank You for Reaching Out
               </h3>
               <p className="text-xs sm:text-sm text-brand-muted max-w-md mx-auto leading-relaxed">
-                Your message has been captured in this frontend prototype demo. In the live website, our boutique team will respond within 24 hours.
+                {isDbSaved
+                  ? 'Your inquiry has been safely received and stored in our Supabase inquiries database. Our boutique concierge will respond within 24 hours.'
+                  : 'Your message has been captured. Our boutique team will respond shortly.'}
               </p>
               <button
                 onClick={() => {
@@ -215,10 +248,20 @@ export default function Contact() {
 
               <button
                 type="submit"
-                className="w-full sm:w-auto px-8 py-3.5 bg-brand-navy hover:bg-brand-navy-light text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-card transition-all"
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-8 py-3.5 bg-brand-navy hover:bg-brand-navy-light disabled:opacity-75 text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-card transition-all"
               >
-                <Send className="w-3.5 h-3.5 text-brand-champagne" />
-                <span>Submit Inquiry (Demo)</span>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 text-brand-champagne animate-spin" />
+                    <span>Sending Inquiry...</span>
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-3.5 h-3.5 text-brand-champagne" />
+                    <span>Send Message</span>
+                  </>
+                )}
               </button>
             </form>
           )}

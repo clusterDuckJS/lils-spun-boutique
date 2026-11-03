@@ -34,28 +34,28 @@ const faqData = [
     ]
   },
   {
-    category: 'Shipping & Delivery (Sample Copy for Approval)',
+    category: 'Shipping & Delivery',
     questions: [
       {
         q: 'What is the estimated dispatch and delivery timeline?',
-        a: '[Sample Policy — Requires Client Approval] Ready-to-ship garments are dispatched within 24 to 48 business hours from our Kerala atelier. Standard domestic delivery takes 3 to 6 business days depending on destination pin code.'
+        a: 'Ready-to-ship garments are dispatched within 24 to 48 business hours from our Kerala atelier. Standard domestic delivery takes 3 to 6 business days depending on destination pin code.'
       },
       {
         q: 'Do you offer international shipping?',
-        a: '[Sample Policy — Requires Client Approval] Yes, we ship worldwide to over 50 countries via premium international courier partners with tracking. International delivery typically takes 6 to 10 working days.'
+        a: 'Yes, we ship worldwide via premium international courier partners with tracking. International delivery typically takes 6 to 10 working days.'
       }
     ]
   },
   {
-    category: 'Returns & Exchanges (Sample Copy for Approval)',
+    category: 'Returns & Exchanges',
     questions: [
       {
         q: 'What is your exchange and return policy?',
-        a: '[Sample Policy — Requires Client Approval] We accept exchange requests within 7 days of delivery for unstitched sarees, dupattas, and standard size garments in original unworn condition with tags intact. Custom tailored garments are final sale.'
+        a: 'We accept exchange requests within 7 days of delivery for unstitched sarees, dupattas, and standard size garments in original unworn condition with tags intact. Custom tailored garments are final sale.'
       },
       {
         q: 'How do I initiate an exchange?',
-        a: '[Sample Policy — Requires Client Approval] Simply email concierge@lilsspunboutique.com with your order number and request. Our team will schedule a return pickup from your address.'
+        a: 'Simply email concierge@lilsspunboutique.com or message us on WhatsApp with your order number and request. Our team will assist and schedule a return pickup from your address.'
       }
     ]
   }
@@ -86,15 +86,6 @@ export default function FAQ() {
         <p className="text-xs sm:text-sm text-brand-muted font-light max-w-lg mx-auto">
           Answers to common questions regarding boutique sizing, weaving crafts, shipping, and styling services.
         </p>
-      </div>
-
-      {/* Client approval disclaimer alert */}
-      <div className="mb-10 p-4 rounded-xl bg-amber-50 border border-amber-200/80 text-xs text-amber-900 flex items-start gap-3">
-        <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-        <div>
-          <strong className="font-semibold block">Design Prototype Note:</strong>
-          All policies below are representative demo drafts prepared for presentation. Final timelines, return conditions, and guarantee terms will be customized according to Lils Spun Boutique’s official operational rules upon launch.
-        </div>
       </div>
 
       {/* FAQ Accordion Groups */}

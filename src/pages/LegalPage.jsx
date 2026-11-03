@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
-import { Shield, AlertTriangle, FileText } from 'lucide-react';
+import { Shield, FileText } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function LegalPage() {
@@ -15,68 +15,76 @@ export default function LegalPage() {
 
       <div className="text-center my-8 sm:my-12 space-y-3">
         <span className="text-xs uppercase tracking-luxury text-brand-rose font-medium block">
-          Legal Framework Placeholder
+          Lils Spun Boutique
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-brand-navy font-normal">
           {title}
         </h1>
         <p className="text-xs sm:text-sm text-brand-muted font-light max-w-lg mx-auto">
-          Sample legal boilerplate draft for Lils Spun Boutique design prototype.
+          {isPrivacy
+            ? 'Our commitment to protecting your personal information and privacy.'
+            : 'Terms governing the purchase and browsing experience at Lils Spun Boutique.'}
         </p>
-      </div>
-
-      <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 mb-8 flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-        <div>
-          <strong className="block font-semibold">Important Disclaimer:</strong>
-          This document is a placeholder generated solely for layout and UX presentation. It does not constitute verified legal advice or approved operational terms for Lils Spun Boutique. The brand owner and legal counsel should review and replace this before commercial deployment.
-        </div>
       </div>
 
       <div className="bg-white p-6 sm:p-10 rounded-2xl border border-brand-border shadow-soft space-y-6 text-xs text-brand-text/85 leading-relaxed font-light">
         {isPrivacy ? (
           <>
             <section className="space-y-2">
-              <h2 className="font-serif text-lg font-medium text-brand-navy">1. Information Collection (Prototype Draft)</h2>
+              <h2 className="font-serif text-lg font-medium text-brand-navy">1. Information We Collect</h2>
               <p>
-                In this prototype, no personal information, payment card details, or sensitive user data are collected, saved to cloud databases, or shared with third parties. Form entries reside solely in frontend client memory or local browser storage.
+                When you visit Lils Spun Boutique, create an account, or place an order, we collect details necessary to process your purchase and deliver an elevated boutique experience. This includes your name, contact phone number, delivery address, and email.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="font-serif text-lg font-medium text-brand-navy">2. Local Storage Usage</h2>
+              <h2 className="font-serif text-lg font-medium text-brand-navy">2. How We Use Your Information</h2>
               <p>
-                The prototype uses standard browser localStorage to remember your shopping bag garments and saved wishlist favourites during page refreshes. You can clear this data at any time through your browser settings.
+                Your details are used exclusively to process orders, coordinate courier dispatch from our Kerala studio, provide delivery tracking, and send tailored styling assistance when requested. We never sell or share your personal data with third-party marketers.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="font-serif text-lg font-medium text-brand-navy">3. Communication & Consent</h2>
+              <h2 className="font-serif text-lg font-medium text-brand-navy">3. Security & Storage</h2>
               <p>
-                Email subscriptions submitted in the newsletter or contact forms in this demo do not trigger external marketing transmissions. Official communications policies will be instituted upon production launch.
+                We employ industry-standard encryption and secure cloud infrastructure to safeguard your account and transaction details. Payment transactions are processed through authenticated and compliant payment gateways.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="font-serif text-lg font-medium text-brand-navy">4. Contacting Our Concierge</h2>
+              <p>
+                If you have inquiries regarding your personal data or wish to update your records, please contact us at <strong>concierge@lilsspunboutique.com</strong> or call <strong>+91 97474 46174</strong>.
               </p>
             </section>
           </>
         ) : (
           <>
             <section className="space-y-2">
-              <h2 className="font-serif text-lg font-medium text-brand-navy">1. Acceptance of Prototype Terms</h2>
+              <h2 className="font-serif text-lg font-medium text-brand-navy">1. Handcrafted Garment Authenticity</h2>
               <p>
-                By navigating this website prototype, you acknowledge that you are interacting with a frontend design concept for Lils Spun Boutique. All products, prices, and inventory representations are sample data created for client approval.
+                All traditional Indian ethnic wear, sarees, and suits offered at Lils Spun Boutique are sourced and curated with the highest standards of craftsmanship. Due to the genuine nature of handloom and artisanal weaving, subtle nuances in texture, zari reflection, or thread weave are authentic signatures of handcrafting.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="font-serif text-lg font-medium text-brand-navy">2. Intellectual Property & Brand Assets</h2>
+              <h2 className="font-serif text-lg font-medium text-brand-navy">2. Orders & Pricing</h2>
               <p>
-                The Lils Spun Boutique logo, trademark crescent botanical emblem, and storefront imagery are the intellectual property of the brand owner. Sample product photography is credited to high-resolution editorial fashion contributors on Unsplash.
+                All prices are listed in Indian Rupees (INR) and are inclusive of applicable taxes. In the event of inadvertent typographical errors in pricing or product descriptions, the boutique reserves the right to correct the details and confirm with the customer before processing.
               </p>
             </section>
 
             <section className="space-y-2">
-              <h2 className="font-serif text-lg font-medium text-brand-navy">3. Limitation of Liability</h2>
+              <h2 className="font-serif text-lg font-medium text-brand-navy">3. Intellectual Property</h2>
               <p>
-                No binding commercial transactions or financial liabilities are incurred through the use of this interactive prototype.
+                The Lils Spun Boutique name, crescent botanical emblem, and editorial photography are the intellectual property of Lils Spun Boutique. Unauthorized reproduction or commercial use is strictly prohibited.
+              </p>
+            </section>
+
+            <section className="space-y-2">
+              <h2 className="font-serif text-lg font-medium text-brand-navy">4. Boutique Studio Information</h2>
+              <p>
+                Lils Spun Boutique, Sree Ram Ganesh Arcade, Residency Road, Asramam. For customer care, call <strong>+91 97474 46174</strong> or WhatsApp <strong>+91 97784 65361</strong>.
               </p>
             </section>
           </>

@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { products } from '../data/products';
+import { useProducts } from './ProductContext';
 import { useToast } from './ToastContext';
 
 const WishlistContext = createContext(null);
 const STORAGE_KEY = 'lils_spun_wishlist_v1';
 
 export function WishlistProvider({ children }) {
+  const { products } = useProducts();
   const { addToast } = useToast();
   const [wishlistIds, setWishlistIds] = useState(() => {
     try {

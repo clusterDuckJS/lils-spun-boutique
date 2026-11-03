@@ -3,9 +3,10 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { Search as SearchIcon, X, Sparkles, ArrowRight } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import ProductGrid from '../components/ProductGrid';
-import { products } from '../data/products';
+import { useProducts } from '../context/ProductContext';
 
 export default function Search() {
+  const { products } = useProducts();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
   const [searchTerm, setSearchTerm] = useState(initialQuery);
@@ -43,14 +44,14 @@ export default function Search() {
     : [];
 
   const popularSuggestions = [
+    'Ready Made',
+    'Churidar Materials',
     'Saree',
-    'Anarkali',
+    'Kids Wear',
     'Kanjivaram',
     'Banarasi',
-    'Lehenga',
-    'Chanderi',
-    'Sharara',
-    'Jewelry'
+    'Chanderi Silk',
+    'Mulmul Cotton'
   ];
 
   return (
@@ -63,7 +64,7 @@ export default function Search() {
           Search the Boutique
         </h1>
         <p className="text-xs sm:text-sm text-brand-muted font-light mb-8">
-          Find traditional sarees, embroidered suits, kurtas, lehengas, or specific fabrics.
+          Find Ready Made gowns, unstitched Churidar Materials, handcrafted Sarees, and traditional Kids Wear.
         </p>
 
         <form onSubmit={handleSearchSubmit} className="relative flex items-center">

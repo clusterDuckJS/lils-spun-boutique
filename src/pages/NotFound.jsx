@@ -20,7 +20,7 @@ export default function NotFound() {
         </h1>
 
         <p className="text-xs sm:text-sm text-brand-muted leading-relaxed font-light">
-          The page you are looking for may have been moved, renamed, or is temporarily unavailable in this prototype.
+          The page you are looking for may have been moved, renamed, or is temporarily unavailable.
         </p>
 
         <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">

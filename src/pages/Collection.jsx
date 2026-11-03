@@ -6,12 +6,13 @@ import ProductGrid from '../components/ProductGrid';
 import FilterSidebar from '../components/FilterSidebar';
 import FilterDrawer from '../components/FilterDrawer';
 import ImageWithFallback from '../components/ImageWithFallback';
-import { products, getProductsByCategory } from '../data/products';
+import { useProducts } from '../context/ProductContext';
 import { collectionMeta } from '../data/collections';
 
 export default function Collection() {
   const { category = 'new-arrivals' } = useParams();
   const [searchParams, setSearchParams] = useSearchParams();
+  const { getProductsByCategory } = useProducts();
 
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
   const [sortBy, setSortBy] = useState('featured');
@@ -47,7 +48,7 @@ export default function Collection() {
   // Base products for this collection
   const baseProducts = useMemo(() => {
     return getProductsByCategory(category);
-  }, [category]);
+  }, [category, getProductsByCategory]);
 
   // Available filter options extracted dynamically from this collection
   const availableFabrics = useMemo(() => {

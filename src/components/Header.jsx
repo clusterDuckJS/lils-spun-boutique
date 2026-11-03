@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Search, Heart, ShoppingBag, Menu, ChevronDown, Sparkles } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Search, Heart, ShoppingBag, Menu, ChevronDown, Sparkles, User, LogOut, Package, ShieldCheck } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import AnnouncementBar from './AnnouncementBar';
 import MegaMenu from './MegaMenu';
@@ -8,28 +8,93 @@ import MobileMenu from './MobileMenu';
 import SearchOverlay from './SearchOverlay';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
-// MegaMenu data definition
+// MegaMenu data definition for the 4 core categories
 const megaMenuData = {
+  'ready-made': {
+    columns: [
+      {
+        title: 'Silhouettes & Gowns',
+        links: [
+          { label: 'All Ready Made', href: '/collections/ready-made' },
+          { label: 'Embroidered Anarkali Gowns', href: '/collections/ready-made?tag=Anarkali', badge: 'Bestseller' },
+          { label: 'Mughal Angrakha Sets', href: '/collections/ready-made?tag=Angrakha', badge: 'Signature' },
+          { label: 'Pre-Stitched Festive Coordinates', href: '/collections/ready-made' }
+        ]
+      },
+      {
+        title: 'Fabrics & Craft',
+        links: [
+          { label: 'Pure Georgette & Sequins', href: '/collections/ready-made?fabric=Georgette' },
+          { label: 'Royal Velvet & Organza', href: '/collections/ready-made?fabric=Velvet', badge: 'Winter' },
+          { label: 'Zari Cord Handwork', href: '/collections/ready-made?tag=Ready+Made' }
+        ]
+      },
+      {
+        title: 'Occasions',
+        links: [
+          { label: 'Festive Celebrations', href: '/collections/ready-made?occasion=Festive+Celebrations' },
+          { label: 'Wedding Guest Ensembles', href: '/collections/ready-made?occasion=Wedding+Guest' },
+          { label: 'Evening Soirees', href: '/collections/ready-made' }
+        ]
+      }
+    ],
+    featuredTitle: 'Ready-to-Wear Elegance',
+    featuredSubtitle: 'Exquisite pre-stitched floor-length gowns and royal velvet Angrakhas.',
+    featuredImage: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80',
+    featuredHref: '/collections/ready-made'
+  },
+  'churidar-materials': {
+    columns: [
+      {
+        title: 'Unstitched Sets',
+        links: [
+          { label: 'All Churidar Materials', href: '/collections/churidar-materials' },
+          { label: 'Handloom Chanderi Silk 3-Piece', href: '/collections/churidar-materials?fabric=Chanderi', badge: 'Handloom' },
+          { label: 'Pure 100s Mulmul Cotton Sets', href: '/collections/churidar-materials?fabric=Cotton', badge: 'Breathable' },
+          { label: 'Bespoke Tailoring Fabrics', href: '/collections/churidar-materials' }
+        ]
+      },
+      {
+        title: 'Artisanal Weaves',
+        links: [
+          { label: 'Traditional Zari Butis', href: '/collections/churidar-materials?tag=Handloom' },
+          { label: 'Kashmiri Resham Yoke Work', href: '/collections/churidar-materials?tag=Kashmiri' },
+          { label: 'Kota Doria Handblock Dupattas', href: '/collections/churidar-materials' }
+        ]
+      },
+      {
+        title: 'Curated Palette',
+        links: [
+          { label: 'Sage Green & Gold', href: '/collections/churidar-materials?colour=Sage' },
+          { label: 'Pastel Lavender & Pearl', href: '/collections/churidar-materials?colour=Lavender' },
+          { label: 'Everyday Elegance', href: '/collections/churidar-materials?occasion=Everyday+Elegance' }
+        ]
+      }
+    ],
+    featuredTitle: 'Artisanal Dress Materials',
+    featuredSubtitle: 'Handcrafted pure fabrics complete with woven dupattas ready for bespoke tailoring.',
+    featuredImage: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80',
+    featuredHref: '/collections/churidar-materials'
+  },
   sarees: {
     columns: [
       {
         title: 'By Weave & Heritage',
         links: [
           { label: 'All Sarees', href: '/collections/sarees' },
-          { label: 'Kanjivaram Pure Silk', href: '/collections/sarees?fabric=Kanchipuram', badge: 'Heritage' },
-          { label: 'Banarasi Brocade', href: '/collections/sarees?fabric=Banarasi' },
-          { label: 'Handloom Chanderi', href: '/collections/sarees?fabric=Chanderi' },
-          { label: 'Handblock Printed', href: '/collections/sarees?tag=Handblock' }
+          { label: 'Kanjivaram Pure Silk', href: '/collections/sarees?fabric=Mulberry', badge: 'Heritage' },
+          { label: 'Banarasi Brocade Silk', href: '/collections/sarees?fabric=Katan', badge: 'Royal' },
+          { label: 'Temple Zari Borders', href: '/collections/sarees?tag=Kanjivaram' }
         ]
       },
       {
-        title: 'Modern & Sheer Drapes',
+        title: 'Silks & Craftsmanship',
         links: [
-          { label: 'Pure Organza Silk', href: '/collections/sarees?fabric=Organza', badge: 'Trending' },
-          { label: 'Tissue Metallic Silk', href: '/collections/sarees?fabric=Tissue' },
-          { label: 'Pastel Handpainted', href: '/collections/sarees?tag=Pastel' },
-          { label: 'Embroidered Border Sarees', href: '/collections/sarees?tag=Festive' }
+          { label: 'Pure Mulberry Silk', href: '/collections/sarees?fabric=Mulberry' },
+          { label: 'Katan Silk Sona Rupa', href: '/collections/sarees?fabric=Katan' },
+          { label: 'Handcrafted Heirlooms', href: '/collections/sarees?tag=Heirloom' }
         ]
       },
       {
@@ -37,147 +102,47 @@ const megaMenuData = {
         links: [
           { label: 'Bridal & Trousseau', href: '/collections/sarees?occasion=Wedding+Guest' },
           { label: 'Festive Celebrations', href: '/collections/sarees?occasion=Festive+Celebrations' },
-          { label: 'Daytime Functions', href: '/collections/sarees?occasion=Everyday+Elegance' },
-          { label: 'Cocktail & Evening', href: '/collections/sarees?occasion=Special+Occasions' }
+          { label: 'Intimate Ceremonies', href: '/collections/sarees?occasion=Special+Occasions' }
         ]
       }
     ],
     featuredTitle: 'The Heirloom Silk Edit',
-    featuredSubtitle: 'Lustrous weaves imbued with timeless antique gold zari.',
+    featuredSubtitle: 'Lustrous weaves imbued with timeless antique gold zari and pure silk purity.',
     featuredImage: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
     featuredHref: '/collections/sarees'
   },
-  'salwar-suits': {
+  'kids-wear': {
     columns: [
       {
-        title: 'Silhouettes',
+        title: 'Traditional Attire',
         links: [
-          { label: 'All Salwar Suits', href: '/collections/salwar-suits' },
-          { label: 'Sweeping Anarkali Sets', href: '/collections/salwar-suits?tag=Anarkali', badge: 'Bestseller' },
-          { label: 'Flared Sharara Sets', href: '/collections/salwar-suits?tag=Sharara' },
-          { label: 'Straight Cut Sets', href: '/collections/salwar-suits?fabric=Chanderi' },
-          { label: 'Palazzo Suits', href: '/collections/salwar-suits?tag=Subtle' }
+          { label: 'All Kids Wear', href: '/collections/kids-wear' },
+          { label: 'Girls Silk Pattu Pavadai Sets', href: '/collections/kids-wear?tag=Pattu', badge: 'Popular' },
+          { label: 'Boys Jacquard Kurta & Dhoti', href: '/collections/kids-wear?tag=Dhoti', badge: 'Festive' },
+          { label: 'Comfort Fit Silhouettes', href: '/collections/kids-wear' }
         ]
       },
       {
-        title: 'Fabrics & Crafts',
+        title: 'Gentle Craftsmanship',
         links: [
-          { label: 'Handloom Chanderi', href: '/collections/salwar-suits?fabric=Chanderi' },
-          { label: 'Pure Georgette & Resham', href: '/collections/salwar-suits?fabric=Georgette' },
-          { label: 'Velvet & Winter Silk', href: '/collections/salwar-suits?fabric=Velvet', badge: 'Royal' },
-          { label: 'Zardozi Handwork', href: '/collections/salwar-suits?tag=Regal' }
+          { label: 'Pure Cotton Inner Linings', href: '/collections/kids-wear?fabric=Cotton' },
+          { label: 'Soft Non-Scratchy Zari', href: '/collections/kids-wear' },
+          { label: 'Elasticated Easy-Wear Waists', href: '/collections/kids-wear' }
         ]
       },
       {
-        title: 'Occasions',
+        title: 'Age Groups',
         links: [
-          { label: 'Wedding Guest', href: '/collections/salwar-suits?occasion=Wedding+Guest' },
-          { label: 'Festive Celebrations', href: '/collections/salwar-suits?occasion=Festive+Celebrations' },
-          { label: 'Intimate Soirees', href: '/collections/salwar-suits?occasion=Everyday+Elegance' }
+          { label: 'Toddlers (2 - 3 Years)', href: '/collections/kids-wear' },
+          { label: 'Little Princes & Princesses (4 - 7 Years)', href: '/collections/kids-wear' },
+          { label: 'Young Royalty (8 - 12 Years)', href: '/collections/kids-wear' }
         ]
       }
     ],
-    featuredTitle: 'Embroidered Anarkalis',
-    featuredSubtitle: '28-kali flared silhouettes with hand-cut scalloped dupattas.',
-    featuredImage: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80',
-    featuredHref: '/collections/salwar-suits'
-  },
-  'kurtas-sets': {
-    columns: [
-      {
-        title: 'Styles & Cuts',
-        links: [
-          { label: 'All Kurtas & Sets', href: '/collections/kurtas-sets' },
-          { label: 'Mughal Angrakha Sets', href: '/collections/kurtas-sets?tag=Angrakha', badge: 'Signature' },
-          { label: 'Straight Tunic & Cigarette Pants', href: '/collections/kurtas-sets?fabric=Cotton' },
-          { label: 'Flared Kurta & Palazzo', href: '/collections/kurtas-sets?fabric=Chanderi' }
-        ]
-      },
-      {
-        title: 'Everyday To Festive',
-        links: [
-          { label: 'Pure Mulmul Cotton', href: '/collections/kurtas-sets?fabric=Cotton', badge: 'Breathable' },
-          { label: 'Festive Silk Blends', href: '/collections/kurtas-sets?fabric=Silk' },
-          { label: 'Pintuck & Linen Tailoring', href: '/collections/kurtas-sets?tag=Minimalist' }
-        ]
-      },
-      {
-        title: 'Curated Palette',
-        links: [
-          { label: 'Soothing Lavender & Mauve', href: '/collections/kurtas-sets?colour=Lavender' },
-          { label: 'Champagne Beige & Ivory', href: '/collections/kurtas-sets?colour=Champagne' },
-          { label: 'Turmeric & Marigold', href: '/collections/kurtas-sets?colour=Marigold' }
-        ]
-      }
-    ],
-    featuredTitle: 'Everyday Grace',
-    featuredSubtitle: 'Tailored for breathable comfort and effortless boutique charm.',
-    featuredImage: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80',
-    featuredHref: '/collections/kurtas-sets'
-  },
-  lehengas: {
-    columns: [
-      {
-        title: 'Occasion Edit',
-        links: [
-          { label: 'All Lehengas', href: '/collections/lehengas' },
-          { label: 'Bridal & Reception', href: '/collections/lehengas?tag=Bridal', badge: 'Opulent' },
-          { label: 'Sangeet & Cocktail', href: '/collections/lehengas?tag=Reception' },
-          { label: 'Destination Wedding Pastels', href: '/collections/lehengas?tag=Pastels' }
-        ]
-      },
-      {
-        title: 'Signature Textures',
-        links: [
-          { label: 'Tissue Silk & Cut-dana', href: '/collections/lehengas?fabric=Tissue' },
-          { label: 'French Net & Resham', href: '/collections/lehengas?fabric=Net' },
-          { label: 'Royal Navy Velvet', href: '/collections/lehengas?fabric=Velvet', badge: 'Exclusive' },
-          { label: 'Raw Silk & Foil Mirror', href: '/collections/lehengas?tag=Modern' }
-        ]
-      },
-      {
-        title: 'Services',
-        links: [
-          { label: 'Custom Stitching Options', href: '/pages/shipping' },
-          { label: 'Styling Consultation', href: '/contact' }
-        ]
-      }
-    ],
-    featuredTitle: 'The Royal Starlight Lehenga',
-    featuredSubtitle: 'Luminous cut-dana, pearls, and sweeping double can-can flares.',
-    featuredImage: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80',
-    featuredHref: '/collections/lehengas'
-  },
-  accessories: {
-    columns: [
-      {
-        title: 'Potlis & Bags',
-        links: [
-          { label: 'All Accessories', href: '/collections/accessories' },
-          { label: 'Handcrafted Zardozi Potlis', href: '/collections/accessories?tag=Potli', badge: 'Handmade' },
-          { label: 'Embroidered Velvet Clutches', href: '/collections/accessories?tag=Artisanal' }
-        ]
-      },
-      {
-        title: 'Heritage Jewelry',
-        links: [
-          { label: 'Kundan & Fresh Pearl Chokers', href: '/collections/accessories?tag=Heritage' },
-          { label: 'Jadau Polki Statement Jhumkas', href: '/collections/accessories?tag=Jhumkas' },
-          { label: 'Meenakari Layered Pieces', href: '/collections/accessories?occasion=Festive+Celebrations' }
-        ]
-      },
-      {
-        title: 'Artisanal Dupattas',
-        links: [
-          { label: 'Handwoven Chanderi Zari', href: '/collections/accessories?tag=Dupatta' },
-          { label: 'Scalloped Silk Organza', href: '/collections/accessories?tag=Classic' }
-        ]
-      }
-    ],
-    featuredTitle: 'Heirloom Accents',
-    featuredSubtitle: 'Finely beaded potlis and 22k gold-plated Jadau Kundan pieces.',
-    featuredImage: 'https://images.unsplash.com/photo-1616763355603-9755a640a287?auto=format&fit=crop&w=800&q=80',
-    featuredHref: '/collections/accessories'
+    featuredTitle: 'Traditional Kids Heritage',
+    featuredSubtitle: 'Irresistibly adorable, skin-friendly traditional attire tailored for young celebrations.',
+    featuredImage: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=800&q=80',
+    featuredHref: '/collections/kids-wear'
   }
 };
 
@@ -186,10 +151,25 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
+  const accountMenuRef = useRef(null);
 
   const { wishlistCount } = useWishlist();
   const { itemCount } = useCart();
+  const { isAuthenticated, profile, signOut } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  // Close account menu on outside click
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (accountMenuRef.current && !accountMenuRef.current.contains(event.target)) {
+        setIsAccountOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Handle sticky header scroll effect
   useEffect(() => {
@@ -200,10 +180,11 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mega menu on page change
+  // Close mega menu & account menu on page change
   useEffect(() => {
     setActiveMegaMenu(null);
     setIsMobileMenuOpen(false);
+    setIsAccountOpen(false);
   }, [location.pathname, location.search]);
 
   return (
@@ -228,7 +209,7 @@ export default function Header() {
                 <BrandLogo size="default" />
               </div>
 
-              {/* Right: Search Icon, Wishlist & Shopping Bag Utility Cluster */}
+              {/* Right: Search Icon, Account, Wishlist & Shopping Bag Utility Cluster */}
               <div className="flex items-center space-x-3 sm:space-x-5">
                 {/* Search icon button only */}
                 <button
@@ -240,6 +221,95 @@ export default function Header() {
                 >
                   <Search className="w-5 h-5" />
                 </button>
+
+                {/* Account / Patron Profile Dropdown */}
+                <div className="relative" ref={accountMenuRef}>
+                  {isAuthenticated ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsAccountOpen(!isAccountOpen)}
+                      className="flex items-center gap-1.5 p-1 sm:px-2.5 sm:py-1.5 text-brand-navy hover:text-brand-rose transition-all rounded-full hover:bg-brand-blush/20 border border-brand-border/60"
+                      aria-label="Account options"
+                      title={`Signed in as ${profile?.fullName || 'Patron'}`}
+                    >
+                      <div className="w-6 h-6 rounded-full bg-brand-navy text-brand-champagne flex items-center justify-center text-xs font-semibold">
+                        {profile?.fullName ? profile.fullName.charAt(0).toUpperCase() : 'P'}
+                      </div>
+                      <span className="text-xs font-medium max-w-[85px] truncate hidden xl:inline-block">
+                        {profile?.fullName?.split(' ')[0] || 'Patron'}
+                      </span>
+                      <ChevronDown className={`w-3 h-3 text-brand-muted transition-transform duration-200 hidden sm:inline-block ${isAccountOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                  ) : (
+                    <Link
+                      to="/login"
+                      className="p-2 text-brand-navy hover:text-brand-rose transition-colors rounded-full hover:bg-brand-blush/20 flex items-center gap-1.5"
+                      aria-label="Sign In or Register"
+                      title="Sign In / Register"
+                    >
+                      <User className="w-5 h-5" />
+                      <span className="text-xs font-medium hidden xl:inline-block">Sign In</span>
+                    </Link>
+                  )}
+
+                  {/* Account Dropdown Pane */}
+                  {isAuthenticated && isAccountOpen && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-dropdown border border-brand-border/80 py-2 z-50 animate-in fade-in slide-in-from-top-1 duration-150">
+                      <div className="px-4 py-2.5 border-b border-brand-border/60">
+                        <p className="text-xs font-medium text-brand-navy truncate">{profile?.fullName || 'Boutique Patron'}</p>
+                        <p className="text-[11px] text-brand-muted truncate">{profile?.email}</p>
+                      </div>
+                      <div className="py-1">
+                        <Link
+                          to="/account?tab=overview"
+                          onClick={() => setIsAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs text-brand-text hover:bg-brand-ivory hover:text-brand-navy transition-colors"
+                        >
+                          <User className="w-3.5 h-3.5 text-brand-rose" />
+                          <span>My Account</span>
+                        </Link>
+                        <Link
+                          to="/account?tab=orders"
+                          onClick={() => setIsAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs text-brand-text hover:bg-brand-ivory hover:text-brand-navy transition-colors"
+                        >
+                          <Package className="w-3.5 h-3.5 text-brand-champagne" />
+                          <span>My Orders</span>
+                        </Link>
+                        <Link
+                          to="/account?tab=address"
+                          onClick={() => setIsAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs text-brand-text hover:bg-brand-ivory hover:text-brand-navy transition-colors"
+                        >
+                          <Sparkles className="w-3.5 h-3.5 text-brand-rose" />
+                          <span>Saved Address</span>
+                        </Link>
+                        <Link
+                          to="/admin"
+                          onClick={() => setIsAccountOpen(false)}
+                          className="flex items-center gap-2.5 px-4 py-2 text-xs text-brand-navy hover:bg-brand-rose/10 transition-colors font-semibold"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5 text-brand-rose" />
+                          <span>Admin Console</span>
+                        </Link>
+                      </div>
+                      <div className="pt-1 border-t border-brand-border/60">
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            setIsAccountOpen(false);
+                            await signOut();
+                            navigate('/');
+                          }}
+                          className="w-full flex items-center gap-2.5 px-4 py-2 text-xs text-red-600 hover:bg-red-50 transition-colors text-left"
+                        >
+                          <LogOut className="w-3.5 h-3.5" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
 
                 {/* Wishlist Link with count badge */}
                 <Link
@@ -270,6 +340,16 @@ export default function Header() {
                     </span>
                   )}
                 </Link>
+
+                {/* Admin Management Button */}
+                <Link
+                  to="/admin"
+                  className="p-2 text-brand-muted hover:text-brand-rose transition-colors rounded-full hover:bg-brand-blush/20 hidden sm:flex items-center"
+                  aria-label="Admin Portal"
+                  title="Admin Management Portal"
+                >
+                  <ShieldCheck className="w-5 h-5" />
+                </Link>
               </div>
 
             </div>
@@ -291,6 +371,38 @@ export default function Header() {
                   New Arrivals
                 </Link>
 
+                {/* Ready Made */}
+                <div
+                  className="relative h-full flex items-center"
+                  onMouseEnter={() => setActiveMegaMenu('ready-made')}
+                >
+                  <Link
+                    to="/collections/ready-made"
+                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                      location.pathname === '/collections/ready-made' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                    }`}
+                  >
+                    Ready Made
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Link>
+                </div>
+
+                {/* Churidar Materials */}
+                <div
+                  className="relative h-full flex items-center"
+                  onMouseEnter={() => setActiveMegaMenu('churidar-materials')}
+                >
+                  <Link
+                    to="/collections/churidar-materials"
+                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                      location.pathname === '/collections/churidar-materials' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                    }`}
+                  >
+                    Churidar Materials
+                    <ChevronDown className="w-3 h-3 opacity-60" />
+                  </Link>
+                </div>
+
                 {/* Sarees */}
                 <div
                   className="relative h-full flex items-center"
@@ -307,77 +419,18 @@ export default function Header() {
                   </Link>
                 </div>
 
-                {/* Salwar Suits */}
+                {/* Kids Wear */}
                 <div
                   className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('salwar-suits')}
+                  onMouseEnter={() => setActiveMegaMenu('kids-wear')}
                 >
                   <Link
-                    to="/collections/salwar-suits"
+                    to="/collections/kids-wear"
                     className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/salwar-suits' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                      location.pathname === '/collections/kids-wear' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
                     }`}
                   >
-                    Salwar Suits
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
-                {/* Kurtas & Sets */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('kurtas-sets')}
-                >
-                  <Link
-                    to="/collections/kurtas-sets"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/kurtas-sets' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Kurtas & Sets
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
-                {/* Lehengas */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('lehengas')}
-                >
-                  <Link
-                    to="/collections/lehengas"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/lehengas' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Lehengas
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
-                {/* Festive Edit */}
-                <Link
-                  to="/collections/festive-wear"
-                  onMouseEnter={() => setActiveMegaMenu(null)}
-                  className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                    location.pathname === '/collections/festive-wear' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                  }`}
-                >
-                  Festive Edit
-                </Link>
-
-                {/* Accessories */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('accessories')}
-                >
-                  <Link
-                    to="/collections/accessories"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/accessories' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Accessories
+                    Kids Wear
                     <ChevronDown className="w-3 h-3 opacity-60" />
                   </Link>
                 </div>
@@ -429,8 +482,22 @@ export default function Header() {
               <BrandLogo size="sm" />
             </div>
 
-            {/* Right: Wishlist & Bag */}
+            {/* Right: Account, Wishlist & Bag */}
             <div className="flex items-center space-x-1 sm:space-x-2">
+              <Link
+                to={isAuthenticated ? "/account" : "/login"}
+                className="p-2 text-brand-navy hover:text-brand-rose transition-colors rounded-lg"
+                aria-label={isAuthenticated ? `Account (${profile?.fullName || 'Patron'})` : "Sign In"}
+              >
+                {isAuthenticated ? (
+                  <div className="w-5 h-5 rounded-full bg-brand-navy text-brand-champagne flex items-center justify-center text-[10px] font-bold">
+                    {profile?.fullName ? profile.fullName.charAt(0).toUpperCase() : 'P'}
+                  </div>
+                ) : (
+                  <User className="w-5 h-5" />
+                )}
+              </Link>
+
               <Link
                 to="/wishlist"
                 className="relative p-2 text-brand-navy hover:text-brand-rose transition-colors rounded-lg"

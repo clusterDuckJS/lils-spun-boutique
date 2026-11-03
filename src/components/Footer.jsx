@@ -26,19 +26,23 @@ export default function Footer() {
               Thoughtfully curated traditional Indian ethnic wear, where timeless weaves meet contemporary feminine grace. Handcrafted silhouettes for your most treasured moments.
             </p>
 
-            {/* Boutique Location & Demo Notice */}
-            <div className="pt-2 space-y-2 text-xs text-brand-ivory/70">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-brand-champagne shrink-0" />
-                <span>Lils Spun Boutique, Flagship Studio, Kerala, India</span>
+            {/* Boutique Location & Contact */}
+            <div className="pt-2 space-y-2.5 text-xs text-brand-ivory/80">
+              <div className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-brand-champagne shrink-0 mt-0.5" />
+                <span className="leading-relaxed">LILS SPUN BOUTIQUE, SREE RAM GANESH ARCADE, RESIDENCY ROAD, ASRAMAM</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-brand-champagne shrink-0" />
-                <span>Boutique Stylist Inquiries: +91 (Demo Prototype)</span>
+                <a href="tel:+919747446174" className="hover:text-brand-champagne transition-colors">
+                  +91 97474 46174
+                </a>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2.5">
                 <Mail className="w-4 h-4 text-brand-champagne shrink-0" />
-                <span>concierge@lilsspunboutique.com (Demo)</span>
+                <a href="mailto:concierge@lilsspunboutique.com" className="hover:text-brand-champagne transition-colors">
+                  concierge@lilsspunboutique.com
+                </a>
               </div>
             </div>
 
@@ -84,33 +88,23 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/collections/ready-made" className="hover:text-brand-champagne transition-colors">
+                  Ready Made
+                </Link>
+              </li>
+              <li>
+                <Link to="/collections/churidar-materials" className="hover:text-brand-champagne transition-colors">
+                  Churidar Materials
+                </Link>
+              </li>
+              <li>
                 <Link to="/collections/sarees" className="hover:text-brand-champagne transition-colors">
-                  Handloom Sarees
+                  Sarees
                 </Link>
               </li>
               <li>
-                <Link to="/collections/salwar-suits" className="hover:text-brand-champagne transition-colors">
-                  Salwar Suits & Anarkalis
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections/kurtas-sets" className="hover:text-brand-champagne transition-colors">
-                  Kurtas & Co-ord Sets
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections/lehengas" className="hover:text-brand-champagne transition-colors">
-                  Festive & Bridal Lehengas
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections/festive-wear" className="hover:text-brand-champagne transition-colors">
-                  The Festive Edit
-                </Link>
-              </li>
-              <li>
-                <Link to="/collections/accessories" className="hover:text-brand-champagne transition-colors">
-                  Accessories & Jewelry
+                <Link to="/collections/kids-wear" className="hover:text-brand-champagne transition-colors">
+                  Kids Wear
                 </Link>
               </li>
             </ul>
@@ -122,6 +116,16 @@ export default function Footer() {
               Customer Care
             </h4>
             <ul className="space-y-2.5 text-xs text-brand-ivory/80">
+              <li>
+                <Link to="/account" className="hover:text-brand-champagne transition-colors">
+                  My Patron Account
+                </Link>
+              </li>
+              <li>
+                <Link to="/account?tab=orders" className="hover:text-brand-champagne transition-colors">
+                  Track My Orders
+                </Link>
+              </li>
               <li>
                 <Link to="/contact" className="hover:text-brand-champagne transition-colors">
                   Contact Boutique
@@ -176,6 +180,11 @@ export default function Footer() {
                   Terms & Conditions
                 </Link>
               </li>
+              <li>
+                <Link to="/admin" className="text-brand-champagne/90 hover:text-white transition-colors font-medium flex items-center gap-1.5 pt-1">
+                  <span>Admin Portal</span>
+                </Link>
+              </li>
             </ul>
 
             {/* Trust badge */}
@@ -190,10 +199,10 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright & Demo Disclaimer */}
+        {/* Bottom Bar: Copyright */}
         <div className="mt-12 pt-8 border-t border-brand-navy-light/60 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-ivory/60 gap-4">
           <p>
-            &copy; {currentYear} Lils Spun Boutique. All rights reserved. (Frontend Design Prototype)
+            &copy; {currentYear} Lils Spun Boutique. All rights reserved.
           </p>
           <div className="flex items-center gap-4 text-[11px]">
             <Link to="/pages/privacy" className="hover:text-brand-ivory transition-colors">

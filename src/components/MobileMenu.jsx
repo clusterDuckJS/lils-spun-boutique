@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { X, ChevronDown, ChevronRight, Heart, ShoppingBag, Search, Sparkles, Phone, HelpCircle } from 'lucide-react';
+import { X, ChevronDown, ChevronRight, Heart, ShoppingBag, Search, Sparkles, Phone, HelpCircle, User, Package, LogOut, ShieldCheck } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
   const { wishlistCount } = useWishlist();
   const { itemCount } = useCart();
+  const { isAuthenticated, profile, signOut } = useAuth();
   const [expandedCategory, setExpandedCategory] = useState(null);
 
   useEffect(() => {
@@ -32,67 +34,47 @@ export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
       badge: 'Fresh'
     },
     {
+      title: 'Ready Made',
+      id: 'ready-made',
+      href: '/collections/ready-made',
+      items: [
+        { label: 'View All Ready Made', href: '/collections/ready-made' },
+        { label: 'Embroidered Anarkali Gowns', href: '/collections/ready-made?tag=Anarkali' },
+        { label: 'Mughal Angrakha Sets', href: '/collections/ready-made?tag=Angrakha' },
+        { label: 'Velvet Festive Coordinates', href: '/collections/ready-made?fabric=Velvet' }
+      ]
+    },
+    {
+      title: 'Churidar Materials',
+      id: 'churidar-materials',
+      href: '/collections/churidar-materials',
+      items: [
+        { label: 'View All Dress Materials', href: '/collections/churidar-materials' },
+        { label: 'Handloom Chanderi Sets', href: '/collections/churidar-materials?fabric=Chanderi' },
+        { label: 'Pure Mulmul Cotton 3-Piece', href: '/collections/churidar-materials?fabric=Cotton' },
+        { label: 'Kashmiri Embroidered Sets', href: '/collections/churidar-materials?tag=Kashmiri' }
+      ]
+    },
+    {
       title: 'Sarees',
       id: 'sarees',
       href: '/collections/sarees',
       items: [
         { label: 'View All Sarees', href: '/collections/sarees' },
-        { label: 'Kanjivaram Silk', href: '/collections/sarees?fabric=Kanchipuram' },
-        { label: 'Banarasi Brocade', href: '/collections/sarees?fabric=Banarasi' },
-        { label: 'Organza & Chiffon', href: '/collections/sarees?fabric=Organza' },
-        { label: 'Handloom Chanderi', href: '/collections/sarees?fabric=Chanderi' }
+        { label: 'Kanjivaram Pure Silk', href: '/collections/sarees?fabric=Mulberry' },
+        { label: 'Banarasi Brocade Silk', href: '/collections/sarees?fabric=Katan' },
+        { label: 'Heirloom Temple Borders', href: '/collections/sarees?tag=Kanjivaram' }
       ]
     },
     {
-      title: 'Salwar Suits',
-      id: 'salwar-suits',
-      href: '/collections/salwar-suits',
+      title: 'Kids Wear',
+      id: 'kids-wear',
+      href: '/collections/kids-wear',
       items: [
-        { label: 'View All Suits', href: '/collections/salwar-suits' },
-        { label: 'Anarkali Sets', href: '/collections/salwar-suits?tag=Anarkali' },
-        { label: 'Sharara Sets', href: '/collections/salwar-suits?tag=Sharara' },
-        { label: 'Straight Cut Suits', href: '/collections/salwar-suits?fabric=Chanderi' },
-        { label: 'Occasion Velvet', href: '/collections/salwar-suits?fabric=Velvet' }
-      ]
-    },
-    {
-      title: 'Kurtas & Sets',
-      id: 'kurtas-sets',
-      href: '/collections/kurtas-sets',
-      items: [
-        { label: 'View All Kurtas', href: '/collections/kurtas-sets' },
-        { label: 'Mulmul Cotton Sets', href: '/collections/kurtas-sets?fabric=Cotton' },
-        { label: 'Angrakha Silhouettes', href: '/collections/kurtas-sets?tag=Angrakha' },
-        { label: 'Festive Silk Kurtas', href: '/collections/kurtas-sets?fabric=Silk' }
-      ]
-    },
-    {
-      title: 'Lehengas',
-      id: 'lehengas',
-      href: '/collections/lehengas',
-      items: [
-        { label: 'View All Lehengas', href: '/collections/lehengas' },
-        { label: 'Bridal & Reception', href: '/collections/lehengas?tag=Bridal' },
-        { label: 'Pastel Embroidered', href: '/collections/lehengas?tag=Pastels' },
-        { label: 'Heritage Velvet', href: '/collections/lehengas?fabric=Velvet' }
-      ]
-    },
-    {
-      title: 'Festive Collection',
-      href: '/collections/festive-wear',
-      isDirect: true,
-      badge: 'Edit'
-    },
-    {
-      title: 'Accessories & Jewelry',
-      id: 'accessories',
-      href: '/collections/accessories',
-      items: [
-        { label: 'View All Accessories', href: '/collections/accessories' },
-        { label: 'Zardozi Potlis & Bags', href: '/collections/accessories?tag=Potli' },
-        { label: 'Kundan & Pearl Jewelry', href: '/collections/accessories?tag=Heritage' },
-        { label: 'Statement Jhumkas', href: '/collections/accessories?tag=Jhumkas' },
-        { label: 'Handcrafted Dupattas', href: '/collections/accessories?tag=Dupatta' }
+        { label: 'View All Kids Wear', href: '/collections/kids-wear' },
+        { label: 'Girls Silk Pattu Pavadai', href: '/collections/kids-wear?tag=Pattu' },
+        { label: 'Boys Kurta & Dhoti Sets', href: '/collections/kids-wear?tag=Dhoti' },
+        { label: 'Festive Children Attire', href: '/collections/kids-wear' }
       ]
     }
   ];
@@ -136,6 +118,61 @@ export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
             <Search className="w-4 h-4 text-brand-rose" />
             <span>Search sarees, anarkalis, lehengas...</span>
           </button>
+        </div>
+
+        {/* Patron Account Card */}
+        <div className="px-4 pt-3 pb-1">
+          {isAuthenticated ? (
+            <div className="p-3 bg-white rounded-xl border border-brand-border/80 shadow-soft">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-full bg-brand-navy text-brand-champagne flex items-center justify-center text-xs font-semibold">
+                    {profile?.fullName ? profile.fullName.charAt(0).toUpperCase() : 'P'}
+                  </div>
+                  <div>
+                    <p className="text-xs font-medium text-brand-navy truncate max-w-[130px]">{profile?.fullName || 'Boutique Patron'}</p>
+                    <span className="text-[10px] text-brand-rose flex items-center gap-1">
+                      <Sparkles className="w-2.5 h-2.5" /> Patron Member
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Link
+                    to="/account"
+                    onClick={onClose}
+                    className="text-[11px] font-medium text-brand-navy hover:text-brand-rose underline underline-offset-2"
+                  >
+                    Portal
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onClose();
+                      signOut();
+                    }}
+                    className="p-1 text-brand-muted hover:text-red-600 transition-colors"
+                    title="Sign Out"
+                  >
+                    <LogOut className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="p-3 bg-white rounded-xl border border-brand-border/80 shadow-soft flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <User className="w-4 h-4 text-brand-rose" />
+                <span className="text-xs text-brand-navy font-medium">Boutique Patron</span>
+              </div>
+              <Link
+                to="/login"
+                onClick={onClose}
+                className="px-3 py-1 bg-brand-navy text-brand-champagne text-[11px] font-medium rounded-lg hover:bg-brand-navy-light transition-colors"
+              >
+                Sign In
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Navigation items list */}
@@ -215,6 +252,13 @@ export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
               className="flex items-center gap-2 py-2 px-2 text-brand-text/80 hover:text-brand-navy"
             >
               <HelpCircle className="w-3.5 h-3.5 text-brand-muted" /> FAQs & Ordering Help
+            </Link>
+            <Link
+              to="/admin"
+              onClick={onClose}
+              className="flex items-center gap-2 py-2 px-2 text-brand-rose hover:text-brand-navy font-semibold bg-brand-rose/10 rounded-lg"
+            >
+              <ShieldCheck className="w-3.5 h-3.5 text-brand-rose" /> Admin Management Portal
             </Link>
           </div>
         </div>

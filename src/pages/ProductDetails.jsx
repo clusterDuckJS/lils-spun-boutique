@@ -16,7 +16,8 @@ import {
 import Breadcrumbs from '../components/Breadcrumbs';
 import ImageWithFallback from '../components/ImageWithFallback';
 import ProductGrid from '../components/ProductGrid';
-import { getProductBySlug, getRelatedProducts, formatINR } from '../data/products';
+import { formatINR } from '../data/products';
+import { useProducts } from '../context/ProductContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
@@ -24,6 +25,7 @@ import { useToast } from '../context/ToastContext';
 export default function ProductDetails() {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const { getProductBySlug, getRelatedProducts } = useProducts();
   const { isInWishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
   const { addToast } = useToast();
@@ -436,7 +438,7 @@ export default function ProductDetails() {
                   <strong>Dispatch:</strong> Orders are dispatched within 24 to 48 hours from our Kerala boutique studio.
                 </p>
                 <p>
-                  <strong>Returns:</strong> Hassle-free 7-day exchange or store credit for unstitched garments. (Demo placeholder)
+                  <strong>Returns:</strong> Hassle-free 7-day exchange or store credit for unworn garments in original condition.
                 </p>
               </div>
             )}

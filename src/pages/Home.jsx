@@ -8,16 +8,17 @@ import QuickViewModal from '../components/QuickViewModal';
 import Newsletter from '../components/Newsletter';
 import ImageWithFallback from '../components/ImageWithFallback';
 import { categories, occasions } from '../data/collections';
-import { products, getNewArrivals, getProductsByCategory } from '../data/products';
+import { useProducts } from '../context/ProductContext';
 
 export default function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const { products, getNewArrivals, getFeaturedProducts } = useProducts();
 
-  // Section C: 8 New Arrival products
+  // Section C: New Arrival products
   const newArrivals = getNewArrivals().slice(0, 8);
 
-  // Section F: Curated "The Festive Edit" collection (5 products)
-  const festiveEditProducts = getProductsByCategory('festive-wear').slice(0, 4);
+  // Section F: Curated Signature Boutique Showcase
+  const signatureProducts = getFeaturedProducts().slice(0, 4);
 
   // Section H: Customer Testimonials (Clearly labelled sample/demo reviews)
   const testimonials = [
@@ -66,8 +67,8 @@ export default function Home() {
           </p>
         </div>
 
-        {/* 6 Category Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 lg:gap-6">
+        {/* 4 Category Cards Grid */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
           {categories.map((cat) => (
             <CategoryCard key={cat.id} category={cat} />
           ))}
@@ -207,33 +208,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION F: Curated Collection (The Festive Edit) */}
+      {/* SECTION F: Curated Collection (Signature Boutique Edit) */}
       <section className="bg-brand-ivory-muted/70 py-16 sm:py-20 border-t border-b border-brand-border/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8 sm:mb-10 gap-4">
             <div>
               <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-luxury text-brand-rose font-medium mb-1">
                 <Sparkles className="w-3.5 h-3.5 text-brand-rose" />
-                <span>Signature Showcase</span>
+                <span>Featured Edit</span>
               </div>
               <h2 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-brand-navy font-normal">
-                The Festive Edit
+                Signature Boutique Creations
               </h2>
               <p className="text-xs sm:text-sm text-brand-muted mt-1 max-w-xl font-light">
-                Opulent Brocades, regal velvet details, and jewel-toned coords handpicked for celebrations.
+                Handcrafted Kanjivaram silks, pure Chanderi materials, and bespoke festive ensembles.
               </p>
             </div>
             <Link
-              to="/collections/festive-wear"
+              to="/collections/ready-made"
               className="inline-flex items-center gap-2 text-xs uppercase tracking-widest text-brand-navy font-semibold hover:text-brand-rose transition-colors group self-start sm:self-auto"
             >
-              <span>View Full Festive Edit</span>
+              <span>Explore Boutique Creations</span>
               <ArrowRight className="w-4 h-4 text-brand-rose group-hover:translate-x-1 transition-transform" />
             </Link>
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
-            {festiveEditProducts.map((product) => (
+            {signatureProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -262,7 +263,7 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-brand-champagne shrink-0" />
                   <span className="text-xs font-serif text-brand-ivory tracking-wide">
-                    Flagship Boutique Experience, Kerala
+                    Sree Ram Ganesh Arcade, Residency Road, Asramam
                   </span>
                 </div>
                 <span className="text-[10px] uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-brand-champagne text-brand-navy font-bold">
@@ -322,12 +323,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION H: Customer Testimonials (Demo Labels) */}
+      {/* SECTION H: Customer Testimonials */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-2xl mx-auto mb-10">
           <div className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-luxury text-brand-muted font-medium mb-1">
             <span className="w-2 h-2 rounded-full bg-brand-rose" />
-            <span>Sample Client Testimonials (Demo Content)</span>
+            <span>Client Reflections</span>
           </div>
           <h2 className="font-serif text-3xl sm:text-4xl text-brand-navy font-normal mb-3">
             Voices of Elegance
@@ -366,7 +367,7 @@ export default function Home() {
                 </div>
                 {t.verified && (
                   <span className="inline-flex items-center gap-1 text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full font-medium">
-                    <CheckCircle2 className="w-3 h-3" /> Sample Review
+                    <CheckCircle2 className="w-3 h-3" /> Verified Patron
                   </span>
                 )}
               </div>

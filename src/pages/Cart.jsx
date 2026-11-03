@@ -198,7 +198,7 @@ export default function Cart() {
               onClick={() => navigate('/checkout')}
               className="w-full py-4 bg-brand-navy hover:bg-brand-navy-light text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-card transition-all"
             >
-              <span>Proceed to Demo Checkout</span>
+              <span>Proceed to Checkout</span>
               <ArrowRight className="w-4 h-4 text-brand-champagne" />
             </button>
 
@@ -206,7 +206,7 @@ export default function Cart() {
             <div className="pt-4 border-t border-brand-border/60 space-y-2.5 text-xs text-brand-muted">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Frontend Design Prototype &bull; No actual charges</span>
+                <span>Secure Checkout &bull; Handcrafted Quality Guaranteed</span>
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-brand-rose shrink-0" />

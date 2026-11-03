@@ -1,12 +1,15 @@
 import React, { useState } from 'react';
-import { Mail, CheckCircle2, Sparkles } from 'lucide-react';
+import { Mail, CheckCircle2, Sparkles, Loader2 } from 'lucide-react';
+import { subscribeNewsletter } from '../services/inquiryService';
 
 export default function Newsletter() {
   const [email, setEmail] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -17,8 +20,16 @@ export default function Newsletter() {
       return;
     }
 
-    // Demo success state
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    const result = await subscribeNewsletter(email);
+    setIsSubmitting(false);
+
+    if (result.success) {
+      setSuccessMessage(result.message || 'You have been added to our private email list.');
+      setIsSubmitted(true);
+    } else {
+      setError(result.error || 'Failed to subscribe. Please try again.');
+    }
   };
 
   return (
@@ -45,7 +56,10 @@ export default function Newsletter() {
               Welcome to the Lils Spun Family
             </h4>
             <p className="text-xs text-brand-muted leading-relaxed">
-              Thank you for subscribing! In this design prototype, your email <strong className="text-brand-navy">{email}</strong> has been received locally.
+              {successMessage}
+            </p>
+            <p className="text-[11px] text-brand-muted mt-1">
+              Registered email: <strong className="text-brand-navy">{email}</strong>
             </p>
             <button
               onClick={() => {
@@ -65,6 +79,7 @@ export default function Newsletter() {
                 <input
                   type="email"
                   value={email}
+                  disabled={isSubmitting}
                   onChange={(e) => {
                     setEmail(e.target.value);
                     if (error) setError('');
@@ -75,9 +90,17 @@ export default function Newsletter() {
               </div>
               <button
                 type="submit"
-                className="px-7 py-3.5 bg-brand-navy hover:bg-brand-navy-light text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold shrink-0 shadow-card transition-all"
+                disabled={isSubmitting}
+                className="px-7 py-3.5 bg-brand-navy hover:bg-brand-navy-light disabled:opacity-75 text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold shrink-0 shadow-card transition-all flex items-center justify-center gap-2"
               >
-                Subscribe
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Joining...</span>
+                  </>
+                ) : (
+                  <span>Subscribe</span>
+                )}
               </button>
             </div>
             {error && (
@@ -86,7 +109,7 @@ export default function Newsletter() {
               </p>
             )}
             <p className="text-[11px] text-brand-muted/80 mt-3 font-light">
-              By subscribing, you agree to receive prototype updates. No spam, ever.
+              By subscribing, you agree to receive boutique updates. No spam, ever.
             </p>
           </form>
         )}

@@ -1,19 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, X, ArrowRight, Sparkles } from 'lucide-react';
-import { products, formatINR } from '../data/products';
+import { formatINR } from '../data/products';
+import { useProducts } from '../context/ProductContext';
 import ImageWithFallback from './ImageWithFallback';
 
 const popularSearches = [
+  'Ready Made',
+  'Churidar Materials',
   'Kanjivaram Saree',
-  'Anarkali Suit',
+  'Kids Pattu Pavadai',
   'Chanderi Silk',
-  'Bridal Lehenga',
-  'Festive Kurta',
-  'Zardozi Potli'
+  'Angrakha Kurta'
 ];
 
 export default function SearchOverlay({ isOpen, onClose }) {
+  const { products } = useProducts();
   const [query, setQuery] = useState('');
   const inputRef = useRef(null);
   const navigate = useNavigate();
@@ -105,7 +107,7 @@ export default function SearchOverlay({ isOpen, onClose }) {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search sarees, suits, lehengas..."
+              placeholder="Search ready made, churidar materials, sarees, kids wear..."
               className="w-full bg-white border border-brand-border rounded-full pl-10 sm:pl-12 pr-24 sm:pr-32 py-3 sm:py-4 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-brand-navy/20 focus:border-brand-navy transition-all shadow-soft placeholder:text-brand-muted/70 placeholder:truncate"
             />
 

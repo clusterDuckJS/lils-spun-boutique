@@ -19,13 +19,6 @@ export default function Shipping() {
         </p>
       </div>
 
-      <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-900 mb-8 flex items-start gap-3">
-        <AlertCircle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-        <p>
-          <strong>Demo Placeholder Notice:</strong> The rates, timelines, and carrier details below are editable mock content prepared for client review and final configuration.
-        </p>
-      </div>
-
       <div className="space-y-8 bg-white p-6 sm:p-10 rounded-2xl border border-brand-border shadow-soft text-xs text-brand-text/85 leading-relaxed font-light">
         <section className="space-y-3">
           <h2 className="font-serif text-xl font-medium text-brand-navy flex items-center gap-2">
