@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Mail, Phone, MapPin, Sparkles, Heart } from 'lucide-react';
+import { Mail, Phone, MapPin, Sparkles, Heart, ShieldCheck } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 
 export default function Footer() {
