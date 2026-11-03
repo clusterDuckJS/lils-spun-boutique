@@ -47,15 +47,23 @@ const faqData = [
     ]
   },
   {
-    category: 'Returns & Exchanges',
+    category: 'Cancellations, Returns & Refunds',
     questions: [
       {
-        q: 'What is your exchange and return policy?',
-        a: 'We accept exchange requests within 7 days of delivery for unstitched sarees, dupattas, and standard size garments in original unworn condition with tags intact. Custom tailored garments are final sale.'
+        q: 'Can I cancel my order?',
+        a: 'Yes, orders can be cancelled within 24 hours of placement or before dispatch, whichever is earlier. To cancel, please email lilsspunboutique@gmail.com or message our WhatsApp concierge at +91 97784 65361 with your Order ID. In case of cancellation before dispatch, a 100% refund is initiated immediately.'
       },
       {
-        q: 'How do I initiate an exchange?',
-        a: 'Simply email lilsspunboutique@gmail.com or message us on WhatsApp (+91 97784 65361) with your order number and request. Our team will assist and schedule a return pickup from your address.'
+        q: 'What is your exchange and return policy?',
+        a: 'We accept returns and exchange requests within 7 calendar days of delivery for unstitched sarees, materials, and standard ready-made garments in original unworn condition with tags intact. Custom-tailored garments are final sale.'
+      },
+      {
+        q: 'How and when will I receive my refund?',
+        a: 'Once your returned garment is inspected at our atelier (within 24-48 hours), your refund is approved and credited back to your original payment method (Bank Account, UPI, or Credit/Debit Card) within 5 to 7 business days.'
+      },
+      {
+        q: 'How do I initiate a return or exchange?',
+        a: 'Simply email lilsspunboutique@gmail.com or message us on WhatsApp (+91 97784 65361) with your order number. Our team will verify eligibility and schedule a doorstep reverse courier pickup.'
       }
     ]
   }

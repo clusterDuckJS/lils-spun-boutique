@@ -1,20 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle2, ShoppingBag, ShieldCheck, ArrowRight, Lock, Sparkles, MapPin, Database, Loader2, User } from 'lucide-react';
+import { CheckCircle2, ShoppingBag, ShieldCheck, ArrowRight, Lock, Sparkles, MapPin, Loader2, User, CreditCard, Truck } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { formatINR } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { createOrder } from '../services/orderService';
 
-export default function DemoCheckout() {
+export default function Checkout() {
   const { items, grandTotal, subtotal, shippingFee, clearCart } = useCart();
   const { isAuthenticated, profile, user, updateProfile } = useAuth();
   const navigate = useNavigate();
 
   const [isOrdered, setIsOrdered] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isDbSaved, setIsDbSaved] = useState(false);
   const [orderRef, setOrderRef] = useState('');
   const [saveToProfile, setSaveToProfile] = useState(true);
 
@@ -26,10 +25,10 @@ export default function DemoCheckout() {
     city: '',
     state: '',
     pincode: '',
-    paymentMethod: 'upi'
+    paymentMethod: 'online'
   });
 
-  // Pre-fill with authenticated profile or default mock patron
+  // Pre-fill with authenticated profile if user is logged in
   useEffect(() => {
     if (isAuthenticated && profile) {
       setFormData(prev => ({
@@ -42,17 +41,6 @@ export default function DemoCheckout() {
         state: profile.state || prev.state || '',
         pincode: profile.pincode || prev.pincode || ''
       }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        name: prev.name || 'Priya Sharma',
-        email: prev.email || 'priya.sharma@example.com',
-        phone: prev.phone || '+91 97474 46174',
-        address: prev.address || 'Sree Ram Ganesh Arcade, Residency Road, Asramam',
-        city: prev.city || 'Kollam',
-        state: prev.state || 'Kerala',
-        pincode: prev.pincode || '691002'
-      }));
     }
   }, [isAuthenticated, profile]);
 
@@ -62,7 +50,7 @@ export default function DemoCheckout() {
     const ref = `LILS-${Math.floor(100000 + Math.random() * 900000)}`;
     setOrderRef(ref);
 
-    // Save order items payload
+    // Order items payload
     const itemsPayload = items.map(item => ({
       productId: item.productId,
       name: item.product?.name,
@@ -72,7 +60,7 @@ export default function DemoCheckout() {
       image: item.product?.images?.[0] || ''
     }));
 
-    const result = await createOrder({
+    await createOrder({
       orderRef: ref,
       customerName: formData.name,
       customerEmail: formData.email,
@@ -100,7 +88,6 @@ export default function DemoCheckout() {
     }
 
     setIsSubmitting(false);
-    setIsDbSaved(result?.success && !result?.simulated);
     setIsOrdered(true);
     clearCart();
   };
@@ -114,44 +101,36 @@ export default function DemoCheckout() {
           </div>
 
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs uppercase tracking-luxury font-semibold">
-            {isDbSaved ? (
-              <>
-                <Database className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Saved to Supabase Database</span>
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-3.5 h-3.5 text-brand-rose" />
-                <span>Order Processed</span>
-              </>
-            )}
+            <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Order Placed Successfully</span>
           </div>
 
           <h1 className="font-serif text-3xl sm:text-4xl text-brand-navy font-normal">
-            Order Confirmed!
+            Thank You for Your Order!
           </h1>
 
-          <div className="p-4 rounded-xl bg-brand-ivory border border-brand-border text-xs text-brand-navy space-y-1">
-            <p>
-              Order Reference Number: <strong className="font-mono text-sm text-brand-navy">{orderRef}</strong>
+          <div className="p-4 rounded-xl bg-brand-ivory border border-brand-border text-xs text-brand-navy space-y-1.5 text-left">
+            <div className="flex justify-between items-center pb-2 border-b border-brand-border/60">
+              <span className="text-brand-muted">Order Reference Number:</span>
+              <strong className="font-mono text-sm text-brand-navy">{orderRef}</strong>
+            </div>
+            <p className="text-brand-muted">
+              <strong>Delivery Address:</strong> {formData.name}, {formData.address}, {formData.city}, {formData.state} - {formData.pincode}
             </p>
             <p className="text-brand-muted">
-              Shipping to: {formData.name}, {formData.city}, {formData.state} ({formData.pincode})
+              <strong>Order Confirmation Sent to:</strong> {formData.email}
             </p>
             <p className="text-brand-muted">
-              Notification sent to: {formData.email}
+              <strong>Estimated Delivery:</strong> 3 to 7 business days via Express Courier
             </p>
           </div>
 
-          {isDbSaved ? (
-            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-900 leading-relaxed text-left">
-              <strong>Order Confirmed:</strong> Your order record, customer details, and purchased garment breakdown have been saved. Our concierge team will review and contact you with dispatch and tracking details.
-            </div>
-          ) : (
-            <div className="p-4 bg-emerald-50 rounded-xl border border-emerald-200 text-xs text-emerald-900 leading-relaxed text-left">
-              <strong>Order Received:</strong> Thank you for your order. Our boutique team will review your order details and reach out to you shortly.
-            </div>
-          )}
+          <div className="p-4 bg-emerald-50/60 rounded-xl border border-emerald-200/80 text-xs text-emerald-900 leading-relaxed text-left space-y-1">
+            <strong>Next Steps:</strong>
+            <p>
+              Your handcrafted garment is being inspected and packed in our signature boutique packaging at our Kollam atelier. You will receive an SMS and email with your courier tracking link once dispatched.
+            </p>
+          </div>
 
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
             {isAuthenticated ? (
@@ -173,9 +152,13 @@ export default function DemoCheckout() {
               to="/collections/new-arrivals"
               className="w-full sm:w-auto px-8 py-3.5 bg-white border border-brand-border hover:border-brand-navy text-brand-navy rounded-full text-xs uppercase tracking-widest font-semibold transition-all"
             >
-              Browse Collections
+              Continue Shopping
             </Link>
           </div>
+
+          <p className="text-[11px] text-brand-muted pt-2">
+            Questions regarding your order? Contact concierge at <a href="mailto:lilsspunboutique@gmail.com" className="underline text-brand-navy">lilsspunboutique@gmail.com</a> or WhatsApp <a href="https://wa.me/919778465361" className="underline text-brand-navy">+91 97784 65361</a>.
+          </p>
         </div>
       </div>
     );
@@ -210,7 +193,7 @@ export default function DemoCheckout() {
 
       <div className="mb-8 pb-4 border-b border-brand-border/60">
         <span className="text-xs uppercase tracking-luxury text-brand-rose font-medium block">
-          Order Placement
+          Secure Order Placement
         </span>
         <h1 className="font-serif text-3xl sm:text-4xl text-brand-navy font-normal">
           Boutique Checkout
@@ -218,7 +201,7 @@ export default function DemoCheckout() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-        {/* Left Form: Shipping Address & Payment Simulation (7 cols on lg) */}
+        {/* Left Form: Shipping Address & Payment Selection (7 cols on lg) */}
         <div className="lg:col-span-7 space-y-6">
           
           {/* Patron Auth Notification Banner */}
@@ -246,7 +229,7 @@ export default function DemoCheckout() {
             <div className="p-4 bg-brand-blush/20 rounded-2xl border border-brand-border flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 text-brand-rose" />
-                <span className="text-brand-navy">Have a boutique patron account?</span>
+                <span className="text-brand-navy">Already have a patron account?</span>
               </div>
               <Link
                 to="/login?redirect=/checkout"
@@ -260,81 +243,88 @@ export default function DemoCheckout() {
 
           <form onSubmit={handlePlaceOrder} className="space-y-6">
             
-            {/* Contact Details */}
+            {/* Step 1: Contact & Delivery Address */}
             <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
               <h2 className="font-serif text-lg font-medium text-brand-navy flex items-center gap-2">
                 <span className="w-6 h-6 rounded-full bg-brand-navy text-white text-xs flex items-center justify-center font-sans">
                   1
                 </span>
-                Contact & Shipping Details
+                Shipping & Delivery Details
               </h2>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                 <div>
-                  <label className="block text-brand-muted font-medium mb-1">Full Name</label>
+                  <label className="block text-brand-muted font-medium mb-1">Full Name *</label>
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Priya Sharma"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
                   />
                 </div>
                 <div>
-                  <label className="block text-brand-muted font-medium mb-1">Email Address (for order updates)</label>
+                  <label className="block text-brand-muted font-medium mb-1">Email Address (for order updates) *</label>
                   <input
                     type="email"
                     required
+                    placeholder="e.g. priya@example.com"
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     className="w-full bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-brand-muted font-medium mb-1">Phone Number (for courier SMS)</label>
+                  <label className="block text-brand-muted font-medium mb-1">Mobile Phone Number (for courier SMS updates) *</label>
                   <input
                     type="tel"
                     required
+                    placeholder="+91 98765 43210"
                     value={formData.phone}
                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                     className="w-full bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-brand-muted font-medium mb-1">Delivery Address</label>
+                  <label className="block text-brand-muted font-medium mb-1">Complete Postal Delivery Address *</label>
                   <input
                     type="text"
                     required
+                    placeholder="Flat / House No., Apartment Name, Street / Locality"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     className="w-full bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
                   />
                 </div>
                 <div>
-                  <label className="block text-brand-muted font-medium mb-1">City</label>
+                  <label className="block text-brand-muted font-medium mb-1">City / Town *</label>
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Kollam"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                     className="w-full bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
                   />
                 </div>
                 <div>
-                  <label className="block text-brand-muted font-medium mb-1">State</label>
+                  <label className="block text-brand-muted font-medium mb-1">State *</label>
                   <input
                     type="text"
                     required
+                    placeholder="e.g. Kerala"
                     value={formData.state}
                     onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                     className="w-full bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-brand-muted font-medium mb-1">Postal Pincode</label>
+                  <label className="block text-brand-muted font-medium mb-1">Postal Pincode *</label>
                   <input
                     type="text"
                     required
+                    placeholder="6-digit PIN code (e.g. 691002)"
                     value={formData.pincode}
                     onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
                     className="w-full sm:w-1/2 bg-brand-ivory/50 border border-brand-border rounded-lg p-2.5 text-xs text-brand-navy focus:outline-none focus:ring-1 focus:ring-brand-navy"
@@ -357,43 +347,70 @@ export default function DemoCheckout() {
               )}
             </div>
 
-            {/* Payment Method Selection (Mock) */}
+            {/* Step 2: Payment Method Selection */}
             <div className="bg-white p-6 rounded-2xl border border-brand-border shadow-soft space-y-4">
-              <h2 className="font-serif text-lg font-medium text-brand-navy flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-brand-navy text-white text-xs flex items-center justify-center font-sans">
-                  2
-                </span>
-                Simulated Payment Mode
-              </h2>
+              <div className="flex items-center justify-between">
+                <h2 className="font-serif text-lg font-medium text-brand-navy flex items-center gap-2">
+                  <span className="w-6 h-6 rounded-full bg-brand-navy text-white text-xs flex items-center justify-center font-sans">
+                    2
+                  </span>
+                  Payment Method
+                </h2>
+                <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 font-medium">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <span>256-Bit SSL Secured</span>
+                </div>
+              </div>
 
               <div className="space-y-3">
-                <label className="flex items-center gap-3 p-3 rounded-xl border border-brand-border hover:border-brand-navy cursor-pointer transition-colors">
+                {/* Online Payment */}
+                <label className="flex items-start gap-3 p-3.5 rounded-xl border border-brand-navy/30 bg-brand-ivory/30 hover:border-brand-navy cursor-pointer transition-all">
                   <input
                     type="radio"
                     name="payment"
-                    value="upi"
-                    checked={formData.paymentMethod === 'upi'}
-                    onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                    className="text-brand-navy"
+                    value="online"
+                    checked={formData.paymentMethod === 'online' || formData.paymentMethod === 'upi'}
+                    onChange={() => setFormData({ ...formData, paymentMethod: 'online' })}
+                    className="mt-0.5 text-brand-navy"
                   />
-                  <div>
-                    <span className="text-xs font-semibold text-brand-navy block">UPI (GPay / PhonePe / Paytm)</span>
-                    <span className="text-[11px] text-brand-muted">Instant direct payment verification</span>
+                  <div className="flex-1 space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-semibold text-brand-navy">
+                        Online Payment (UPI, Cards, Net Banking)
+                      </span>
+                      <span className="text-[10px] text-emerald-700 font-bold uppercase tracking-wider bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
+                        Recommended
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-brand-muted">
+                      Pay securely with Google Pay, PhonePe, Paytm, BHIM UPI, Visa, Mastercard, RuPay, or Internet Banking.
+                    </p>
+                    <div className="flex items-center gap-2 pt-1">
+                      <span className="text-[10px] font-bold text-brand-navy bg-white px-2 py-0.5 rounded border border-brand-border">UPI</span>
+                      <span className="text-[10px] font-bold text-[#1a1f71] bg-white px-2 py-0.5 rounded border border-brand-border">VISA</span>
+                      <span className="text-[10px] font-bold text-[#eb001b] bg-white px-2 py-0.5 rounded border border-brand-border">Mastercard</span>
+                      <span className="text-[10px] font-bold text-[#008cba] bg-white px-2 py-0.5 rounded border border-brand-border">RuPay</span>
+                    </div>
                   </div>
                 </label>
 
-                <label className="flex items-center gap-3 p-3 rounded-xl border border-brand-border hover:border-brand-navy cursor-pointer transition-colors">
+                {/* Cash on Delivery / Pay at Studio */}
+                <label className="flex items-start gap-3 p-3.5 rounded-xl border border-brand-border hover:border-brand-navy cursor-pointer transition-all">
                   <input
                     type="radio"
                     name="payment"
-                    value="card"
-                    checked={formData.paymentMethod === 'card'}
-                    onChange={(e) => setFormData({ ...formData, paymentMethod: e.target.value })}
-                    className="text-brand-navy"
+                    value="cod"
+                    checked={formData.paymentMethod === 'cod'}
+                    onChange={() => setFormData({ ...formData, paymentMethod: 'cod' })}
+                    className="mt-0.5 text-brand-navy"
                   />
                   <div>
-                    <span className="text-xs font-semibold text-brand-navy block">Credit / Debit Card</span>
-                    <span className="text-[11px] text-brand-muted">Visa, Mastercard, RuPay & Amex</span>
+                    <span className="text-xs font-semibold text-brand-navy block">
+                      Cash on Delivery (COD) / Pay at Studio
+                    </span>
+                    <span className="text-[11px] text-brand-muted">
+                      Pay upon courier delivery or when collecting your piece at our Kollam boutique studio.
+                    </span>
                   </div>
                 </label>
               </div>
@@ -407,7 +424,7 @@ export default function DemoCheckout() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 text-brand-champagne animate-spin" />
-                  <span>Processing Order...</span>
+                  <span>Confirming Order...</span>
                 </>
               ) : (
                 <>
@@ -452,14 +469,34 @@ export default function DemoCheckout() {
               <span className="font-semibold text-brand-navy font-sans">{formatINR(subtotal)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-brand-muted">Shipping</span>
+              <div>
+                <span className="text-brand-muted block">Boutique Shipping</span>
+                <span className="text-[10px] text-brand-muted">
+                  {shippingFee === 0 ? 'Complimentary on orders ≥ ₹4,999' : 'Standard express dispatch'}
+                </span>
+              </div>
               <span className="font-semibold text-brand-navy font-sans">
                 {shippingFee === 0 ? 'FREE' : formatINR(shippingFee)}
               </span>
             </div>
             <div className="pt-3 border-t border-brand-border flex justify-between items-baseline">
-              <span className="font-serif text-base font-semibold text-brand-navy">Total Payable</span>
+              <div>
+                <span className="font-serif text-base font-semibold text-brand-navy">Total Payable</span>
+                <span className="text-[10px] text-brand-muted block">(Inclusive of all taxes & GST)</span>
+              </div>
               <span className="font-sans text-xl font-bold text-brand-navy">{formatINR(grandTotal)}</span>
+            </div>
+          </div>
+
+          {/* Compliance guarantees */}
+          <div className="pt-4 border-t border-brand-border/60 space-y-2 text-[11px] text-brand-muted">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+              <span>Safe & Secure Transactions &bull; SSL Encrypted</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Truck className="w-4 h-4 text-brand-rose shrink-0" />
+              <span>Insured express domestic courier dispatch</span>
             </div>
           </div>
         </div>

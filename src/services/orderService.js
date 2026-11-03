@@ -2,7 +2,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase.js';
 
 const LOCAL_ORDERS_KEY = 'lils_spun_orders_v1';
 
-// Helper to get local demo orders
+// Helper to get local orders
 function getLocalOrders() {
   try {
     const saved = localStorage.getItem(LOCAL_ORDERS_KEY);

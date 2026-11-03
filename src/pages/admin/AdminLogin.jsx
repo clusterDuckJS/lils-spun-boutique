@@ -154,11 +154,11 @@ export default function AdminLogin() {
             </button>
           </form>
 
-          {/* Quick Demo Fill Helper */}
+          {/* Store Manager Access Helper */}
           <div className="mt-6 pt-6 border-t border-brand-border/60">
             <div className="p-3.5 bg-brand-ivory/60 rounded-2xl border border-brand-border flex items-center justify-between gap-3">
               <div>
-                <p className="text-[11px] font-semibold text-brand-navy">Default Credentials</p>
+                <p className="text-[11px] font-semibold text-brand-navy">Store Manager Access</p>
                 <p className="text-[11px] text-brand-muted">admin@lilsspun.com / admin</p>
               </div>
               <button

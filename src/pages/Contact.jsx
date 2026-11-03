@@ -84,7 +84,7 @@ export default function Contact() {
               <div>
                 <strong className="text-brand-ivory block font-medium">Boutique Address</strong>
                 <p className="mt-0.5 text-brand-ivory/80 leading-relaxed">
-                  LILS SPUN BOUTIQUE, SREE RAM GANESH ARCADE, RESIDENCY ROAD, ASRAMAM
+                  LILS SPUN BOUTIQUE, SREE RAM GANESH ARCADE, RESIDENCY ROAD, ASRAMAM, KOLLAM, KERALA - 691002, INDIA
                 </p>
               </div>
             </div>
@@ -178,9 +178,7 @@ export default function Contact() {
                 Thank You for Reaching Out
               </h3>
               <p className="text-xs sm:text-sm text-brand-muted max-w-md mx-auto leading-relaxed">
-                {isDbSaved
-                  ? 'Your inquiry has been safely received and stored in our Supabase inquiries database. Our boutique concierge will respond within 24 hours.'
-                  : 'Your message has been captured. Our boutique team will respond shortly.'}
+                Your message has been received by our boutique team. Our concierge will review your message and respond within 24 hours.
               </p>
               <button
                 onClick={() => {

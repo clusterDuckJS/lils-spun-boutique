@@ -6,7 +6,7 @@ import { useToast } from '../context/ToastContext';
 import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function Login() {
-  const { signIn, signInDemo, isAuthenticated } = useAuth();
+  const { signIn, isAuthenticated } = useAuth();
   const { addToast } = useToast();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -55,18 +55,6 @@ export default function Login() {
     } else {
       setErrorMessage(result.error || 'Invalid email or password. Please try again.');
     }
-  };
-
-  const handleDemoLogin = () => {
-    setIsLoading(true);
-    signInDemo('customer');
-    setIsLoading(false);
-    addToast({
-      title: 'Demo Sign-In Active',
-      message: 'Signed in as Priya Sharma (Demo Patron).',
-      type: 'info'
-    });
-    navigate(redirectPath, { replace: true });
   };
 
   return (
@@ -170,22 +158,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          {/* Quick Demo Sign In Option */}
-          <div className="mt-6 pt-6 border-t border-brand-border">
-            <p className="text-[11px] text-center text-brand-muted uppercase tracking-wider mb-3">
-              Fast Reviewer Access
-            </p>
-            <button
-              type="button"
-              onClick={handleDemoLogin}
-              disabled={isLoading}
-              className="w-full py-2.5 px-4 bg-brand-blush/20 hover:bg-brand-blush/35 text-brand-navy border border-brand-champagne/40 rounded-xl text-xs font-medium transition-colors flex items-center justify-center gap-2"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-brand-rose" />
-              <span>One-Click Demo Patron Sign-In</span>
-            </button>
-          </div>
 
           {/* Switch to SignUp */}
           <div className="mt-8 text-center text-xs text-brand-muted">

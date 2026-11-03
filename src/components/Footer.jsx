@@ -30,7 +30,9 @@ export default function Footer() {
             <div className="pt-2 space-y-2.5 text-xs text-brand-ivory/80">
               <div className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-brand-champagne shrink-0 mt-0.5" />
-                <span className="leading-relaxed">LILS SPUN BOUTIQUE, SREE RAM GANESH ARCADE, RESIDENCY ROAD, ASRAMAM</span>
+                <span className="leading-relaxed">
+                  LILS SPUN BOUTIQUE, SREE RAM GANESH ARCADE, RESIDENCY ROAD, ASRAMAM, KOLLAM, KERALA - 691002, INDIA
+                </span>
               </div>
               <div className="flex items-center gap-2.5">
                 <Phone className="w-4 h-4 text-brand-champagne shrink-0" />
@@ -113,8 +115,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-brand-ivory/80">
               <li>
-                <Link to="/account" className="hover:text-brand-champagne transition-colors">
-                  My Patron Account
+                <Link to="/contact" className="hover:text-brand-champagne transition-colors">
+                  Contact Us
                 </Link>
               </li>
               <li>
@@ -123,18 +125,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-brand-champagne transition-colors">
-                  Contact Boutique
-                </Link>
-              </li>
-              <li>
                 <Link to="/pages/shipping" className="hover:text-brand-champagne transition-colors">
-                  Shipping Information
+                  Shipping & Delivery Policy
                 </Link>
               </li>
               <li>
                 <Link to="/pages/returns" className="hover:text-brand-champagne transition-colors">
-                  Returns & Exchanges
+                  Cancellation & Refund Policy
                 </Link>
               </li>
               <li>
@@ -143,13 +140,8 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/wishlist" className="hover:text-brand-champagne transition-colors">
-                  My Wishlist
-                </Link>
-              </li>
-              <li>
-                <Link to="/cart" className="hover:text-brand-champagne transition-colors">
-                  Shopping Bag
+                <Link to="/account" className="hover:text-brand-champagne transition-colors">
+                  My Patron Account
                 </Link>
               </li>
             </ul>
@@ -158,17 +150,12 @@ export default function Footer() {
           {/* Information & Legal (2 cols on lg) */}
           <div className="lg:col-span-2 space-y-3">
             <h4 className="text-xs uppercase tracking-luxury text-brand-champagne font-semibold pb-2 border-b border-brand-navy-light/60">
-              Boutique Info
+              Boutique Legal
             </h4>
             <ul className="space-y-2.5 text-xs text-brand-ivory/80">
               <li>
                 <Link to="/about" className="hover:text-brand-champagne transition-colors">
-                  Our Story
-                </Link>
-              </li>
-              <li>
-                <Link to="/pages/privacy" className="hover:text-brand-champagne transition-colors">
-                  Privacy Policy
+                  About Us
                 </Link>
               </li>
               <li>
@@ -177,8 +164,13 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/admin" className="text-brand-champagne/90 hover:text-white transition-colors font-medium flex items-center gap-1.5 pt-1">
-                  <span>Admin Portal</span>
+                <Link to="/pages/privacy" className="hover:text-brand-champagne transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/pages/privacy" className="hover:text-brand-champagne transition-colors">
+                  Grievance Redressal
                 </Link>
               </li>
             </ul>
@@ -195,22 +187,46 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar: Copyright */}
-        <div className="mt-12 pt-8 border-t border-brand-navy-light/60 flex flex-col sm:flex-row items-center justify-between text-xs text-brand-ivory/60 gap-4">
+        {/* Payment Methods & Security Assurance Banner (Mandatory for Gateways) */}
+        <div className="mt-12 pt-8 border-t border-brand-navy-light/60 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-brand-ivory/80">
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+            <div className="text-left">
+              <span className="font-semibold text-brand-ivory block">100% Secure Checkout</span>
+              <span className="text-[11px] text-brand-ivory/60">256-bit SSL Encryption &bull; RBI & PCI-DSS Compliant</span>
+            </div>
+          </div>
+
+          {/* Payment Badges */}
+          <div className="flex flex-wrap items-center justify-center gap-2 text-[10px] font-semibold text-brand-navy tracking-wider uppercase">
+            <span className="px-2.5 py-1 rounded bg-white font-bold text-[#5f259f]">UPI</span>
+            <span className="px-2.5 py-1 rounded bg-white font-bold text-[#1a1f71]">VISA</span>
+            <span className="px-2.5 py-1 rounded bg-white font-bold text-[#eb001b]">Mastercard</span>
+            <span className="px-2.5 py-1 rounded bg-white font-bold text-[#008cba]">RuPay</span>
+            <span className="px-2.5 py-1 rounded bg-white font-medium text-brand-navy">Net Banking</span>
+          </div>
+        </div>
+
+        {/* Bottom Bar: Copyright & Registered Address */}
+        <div className="mt-6 pt-6 border-t border-brand-navy-light/40 flex flex-col md:flex-row items-center justify-between text-[11px] text-brand-ivory/60 gap-4 text-center md:text-left">
           <p>
-            &copy; {currentYear} Lils Spun Boutique. All rights reserved.
+            &copy; {currentYear} <strong>LILS SPUN BOUTIQUE</strong>. Sree Ram Ganesh Arcade, Residency Road, Asramam, Kollam, Kerala - 691002, India. All rights reserved.
           </p>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex flex-wrap items-center justify-center gap-3">
             <Link to="/pages/privacy" className="hover:text-brand-ivory transition-colors">
-              Privacy
+              Privacy Policy
             </Link>
             <span>&bull;</span>
             <Link to="/pages/terms" className="hover:text-brand-ivory transition-colors">
-              Terms
+              Terms & Conditions
             </Link>
             <span>&bull;</span>
-            <Link to="/pages/faqs" className="hover:text-brand-ivory transition-colors">
-              Help
+            <Link to="/pages/returns" className="hover:text-brand-ivory transition-colors">
+              Cancellation & Refund Policy
+            </Link>
+            <span>&bull;</span>
+            <Link to="/pages/shipping" className="hover:text-brand-ivory transition-colors">
+              Shipping Policy
             </Link>
           </div>
         </div>

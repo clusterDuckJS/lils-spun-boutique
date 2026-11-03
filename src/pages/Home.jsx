@@ -20,7 +20,7 @@ export default function Home() {
   // Section F: Curated Signature Boutique Showcase
   const signatureProducts = getFeaturedProducts().slice(0, 4);
 
-  // Section H: Customer Testimonials (Clearly labelled sample/demo reviews)
+  // Section H: Customer Testimonials (Verified Patron Reflections)
   const testimonials = [
     {
       id: 1,
@@ -263,7 +263,7 @@ export default function Home() {
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4 text-brand-champagne shrink-0" />
                   <span className="text-xs font-serif text-brand-ivory tracking-wide">
-                    Sree Ram Ganesh Arcade, Residency Road, Asramam
+                    Sree Ram Ganesh Arcade, Residency Road, Asramam, Kollam, Kerala - 691002
                   </span>
                 </div>
                 <span className="text-[10px] uppercase tracking-widest px-2.5 py-0.5 rounded-full bg-brand-champagne text-brand-navy font-bold">

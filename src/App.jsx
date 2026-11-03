@@ -20,7 +20,7 @@ import ProductDetails from './pages/ProductDetails';
 import Search from './pages/Search';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
-import DemoCheckout from './pages/DemoCheckout';
+import Checkout from './pages/Checkout';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
@@ -58,7 +58,7 @@ function AppLayout() {
           <Route path="/search" element={<Search />} />
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<DemoCheckout />} />
+          <Route path="/checkout" element={<Checkout />} />
           
           {/* Auth & Patron Routes */}
           <Route path="/login" element={<Login />} />
@@ -94,14 +94,27 @@ function AppLayout() {
             }
           />
 
-          {/* Static Boutique Pages */}
+          {/* Mandatory Compliance & Static Boutique Pages with Standard Aliases */}
           <Route path="/about" element={<About />} />
+          <Route path="/about-us" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/contact-us" element={<Contact />} />
           <Route path="/pages/faqs" element={<FAQ />} />
+          <Route path="/faqs" element={<FAQ />} />
           <Route path="/pages/shipping" element={<Shipping />} />
+          <Route path="/shipping-policy" element={<Shipping />} />
+          <Route path="/pages/shipping-policy" element={<Shipping />} />
           <Route path="/pages/returns" element={<Returns />} />
+          <Route path="/pages/cancellation-refund" element={<Returns />} />
+          <Route path="/pages/refund-policy" element={<Returns />} />
+          <Route path="/cancellation-and-refund-policy" element={<Returns />} />
+          <Route path="/cancellation-refund-policy" element={<Returns />} />
+          <Route path="/refund-policy" element={<Returns />} />
           <Route path="/pages/privacy" element={<LegalPage />} />
+          <Route path="/privacy-policy" element={<LegalPage />} />
           <Route path="/pages/terms" element={<LegalPage />} />
+          <Route path="/terms-and-conditions" element={<LegalPage />} />
+          <Route path="/terms-of-service" element={<LegalPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

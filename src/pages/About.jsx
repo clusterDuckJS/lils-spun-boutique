@@ -41,7 +41,7 @@ export default function About() {
                 <MapPin className="w-5 h-5 text-brand-champagne shrink-0" />
                 <div>
                   <h3 className="font-serif text-base text-brand-ivory font-medium">Flagship Studio & Atelier</h3>
-                  <p className="text-xs text-brand-champagne/90">Sree Ram Ganesh Arcade, Residency Road, Asramam</p>
+                  <p className="text-xs text-brand-champagne/90">Sree Ram Ganesh Arcade, Residency Road, Asramam, Kollam, Kerala - 691002</p>
                 </div>
               </div>
               <span className="text-[11px] uppercase tracking-widest px-3 py-1 rounded-full bg-brand-champagne text-brand-navy font-bold">
