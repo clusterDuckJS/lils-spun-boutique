@@ -79,7 +79,7 @@ export default function HeroSection() {
               {/* Main Campaign Editorial Photography */}
               <div className="relative rounded-2xl overflow-hidden shadow-elevated border-4 border-white aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4]">
                 <ImageWithFallback
-                  src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=85"
+                  src="/images/products/rose-pink-kanjivaram-saree.jpg"
                   alt="Lils Spun Boutique Festive Silk Collection"
                   aspectRatio="aspect-full"
                   className="w-full h-full object-cover object-top"

@@ -1,6 +1,17 @@
 import React, { useState } from 'react';
 
-const DEFAULT_FALLBACK = 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80';
+const DEFAULT_FALLBACK = '/images/products/rose-pink-kanjivaram-saree.jpg';
+
+export function resolveAssetUrl(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  const base = import.meta.env.BASE_URL || '/';
+  const cleanBase = (base && base !== '.' && base !== './') ? (base.endsWith('/') ? base.slice(0, -1) : base) : '';
+  const cleanPath = url.startsWith('/') ? url : `/${url}`;
+  return cleanBase ? `${cleanBase}${cleanPath}` : cleanPath;
+}
 
 export default function ImageWithFallback({
   src,
@@ -13,7 +24,8 @@ export default function ImageWithFallback({
   const [hasError, setHasError] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const finalSrc = hasError || !src ? fallbackSrc : src;
+  const rawSrc = hasError || !src ? fallbackSrc : src;
+  const finalSrc = resolveAssetUrl(rawSrc);
 
   return (
     <div className={`relative overflow-hidden bg-brand-ivory-muted ${aspectRatio} ${className}`}>

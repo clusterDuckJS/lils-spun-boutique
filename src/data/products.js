@@ -18,9 +18,7 @@ export const products = [
     price: 6850,
     originalPrice: 8500,
     images: [
-      'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/georgette-anarkali-gown.jpg'
     ],
     description: 'Gracefully pre-stitched floor-length Anarkali gown in ethereal georgette, embellished with resham threadwork, micro sequins, and scalloped border dupatta. Perfect for effortless festive celebrations and wedding receptions.',
     fabric: 'Pure Georgette with Soft Crepe Lining',
@@ -53,9 +51,7 @@ export const products = [
     price: 8200,
     originalPrice: 9800,
     images: [
-      'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1627916607164-7b20241db935?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/mughal-velvet-kurta-set.jpg'
     ],
     description: 'A luxurious ready-to-wear Angrakha silhouette tailored in royal velvet. Accented with golden zari cord piping, handcrafted bullion tassels, and paired with tailored cigarette trousers and an embroidered organza dupatta.',
     fabric: 'Micro Velvet & Tissue Organza',
@@ -92,9 +88,7 @@ export const products = [
     price: 3950,
     originalPrice: 4800,
     images: [
-      'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1627916607164-7b20241db935?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/chanderi-silk-churidar.jpg'
     ],
     description: 'Artisanal unstitched 3-piece churidar suit material featuring hand-woven floral butis on pure Chanderi silk. Accompanied by a pure cotton-silk bottom fabric and a lustrous banarasi border dupatta for bespoke boutique tailoring.',
     fabric: 'Handloom Chanderi Silk Top, Cotton Silk Bottom, Chanderi Dupatta',
@@ -127,9 +121,7 @@ export const products = [
     price: 3200,
     originalPrice: 3900,
     images: [
-      'https://images.unsplash.com/photo-1627916607164-7b20241db935?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/kashmiri-mulmul-material.jpg'
     ],
     description: 'Featherweight premium 100s count pure mulmul cotton unstitched suit material adorned with traditional Kashmiri thread motifs and an ombre handblock printed kota doria dupatta.',
     fabric: '100s Count Mulmul Cotton & Kota Doria Dupatta',
@@ -166,9 +158,7 @@ export const products = [
     price: 14800,
     originalPrice: 18500,
     images: [
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/rose-pink-kanjivaram-saree.jpg'
     ],
     description: 'An ethereal pure silk saree woven with intricate floral jaal in antique gold zari. The contrasting rich pallu features traditional peacock motifs with scalloped resham borders, draping in effortless royal grace.',
     fabric: 'Pure Mulberry Silk with Antique Gold Zari',
@@ -201,9 +191,7 @@ export const products = [
     price: 16500,
     originalPrice: 21000,
     images: [
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/banarasi-brocade-saree.jpg'
     ],
     description: 'A majestic Varanasi handloom brocade drape in deep royal midnight navy, covered in fine kadhwa silver and gold sona-rupa floral vines with an opulent heirloom pallu.',
     fabric: 'Pure Katan Silk with Sona Rupa Brocade',
@@ -240,9 +228,7 @@ export const products = [
     price: 3450,
     originalPrice: 4200,
     images: [
-      'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/girls-pattu-pavadai.jpg'
     ],
     description: 'Traditional handcrafted South Indian Pattu Pavadai (lehenga-choli) set for young girls, woven from soft silk with golden temple zari borders, butter-soft cotton lining, and comfortable elasticated waistband.',
     fabric: 'Soft Silk Blend with 100% Breathable Cotton Lining',
@@ -275,9 +261,7 @@ export const products = [
     price: 2850,
     originalPrice: 3500,
     images: [
-      'https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=1000&q=80',
-      'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80'
+      '/images/products/boys-kurta-dhoti-set.jpg'
     ],
     description: 'Festive celebratory ethnic set for young gentlemen. Includes a tailored woven jacquard silk kurta with mandarin collar, metallic buttons, and ready-to-wear pre-pleated dhoti pants with soft elastic.',
     fabric: 'Banarasi Jacquard Silk with Cotton Voile Inner Lining',

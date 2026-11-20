@@ -18,6 +18,41 @@ export const CATEGORY_NAMES = {
   'kids-wear': 'Kids Wear'
 };
 
+const CANONICAL_PRODUCT_IMAGES = {
+  'ls-rm-001': '/images/products/georgette-anarkali-gown.jpg',
+  'ls-rm-002': '/images/products/mughal-velvet-kurta-set.jpg',
+  'ls-cm-001': '/images/products/chanderi-silk-churidar.jpg',
+  'ls-cm-002': '/images/products/kashmiri-mulmul-material.jpg',
+  'ls-sar-001': '/images/products/rose-pink-kanjivaram-saree.jpg',
+  'ls-sar-002': '/images/products/banarasi-brocade-saree.jpg',
+  'ls-kw-001': '/images/products/girls-pattu-pavadai.jpg',
+  'ls-kw-002': '/images/products/boys-kurta-dhoti-set.jpg'
+};
+
+export function sanitizeImages(images, productId) {
+  // If product is one of the 8 canonical catalog items, strictly enforce its title-matching image
+  if (productId && CANONICAL_PRODUCT_IMAGES[productId]) {
+    const firstImg = Array.isArray(images) ? images[0] : (typeof images === 'string' ? images : null);
+    if (firstImg && typeof firstImg === 'string' && firstImg.startsWith('data:image/')) {
+      return [firstImg];
+    }
+    return [CANONICAL_PRODUCT_IMAGES[productId]];
+  }
+
+  const rawList = Array.isArray(images) ? images : (typeof images === 'string' ? [images] : []);
+  if (rawList.length === 0) {
+    return ['/images/products/georgette-anarkali-gown.jpg'];
+  }
+
+  const primaryImg = rawList[0];
+  if (typeof primaryImg === 'string') {
+    if (primaryImg.includes('1627916607164')) return ['/images/products/kashmiri-mulmul-material.jpg'];
+    if (primaryImg.includes('1519689680058')) return ['/images/products/boys-kurta-dhoti-set.jpg'];
+    return [primaryImg];
+  }
+  return [primaryImg];
+}
+
 export function normalizeProduct(row) {
   if (!row) return null;
   return {
@@ -28,7 +63,7 @@ export function normalizeProduct(row) {
     categoryName: row.category_name ?? row.categoryName ?? CATEGORY_NAMES[row.category] ?? 'Boutique Collection',
     price: Number(row.price || 0),
     originalPrice: row.original_price != null ? Number(row.original_price) : (row.originalPrice != null ? Number(row.originalPrice) : null),
-    images: Array.isArray(row.images) ? row.images : (typeof row.images === 'string' ? [row.images] : []),
+    images: sanitizeImages(row.images, row.id).slice(0, 1),
     description: row.description || '',
     fabric: row.fabric || '',
     occasion: row.occasion || '',
@@ -76,7 +111,7 @@ export function toDatabaseRow(product) {
 function getLocalOverlays() {
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_OVERLAY_KEY);
-    return raw ? JSON.parse(raw) : [];
+    return raw ? JSON.parse(raw).map(normalizeProduct).filter(Boolean) : [];
   } catch {
     return [];
   }
@@ -173,6 +208,9 @@ export async function getProducts(forceRefresh = false) {
   if (deletedIds.length > 0) {
     productsResult = productsResult.filter(p => !deletedIds.includes(p.id));
   }
+
+  // Ensure every product is normalized so exactly 1 title-matching image is present
+  productsResult = productsResult.map(normalizeProduct).filter(Boolean);
 
   cachedProducts = productsResult;
   cacheTimestamp = now;

@@ -47,8 +47,8 @@ export default function ProductCard({ product, onQuickView }) {
     }
   };
 
-  // Image to show on hover (2nd image if available)
-  const displayImage = isHovered && product.images[1] ? product.images[1] : product.images[0];
+  // Exactly one image per product
+  const displayImage = (product.images && product.images[0]) || '';
 
   return (
     <div

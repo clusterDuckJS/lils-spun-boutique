@@ -148,7 +148,7 @@ export default function Home() {
             {/* Campaign Visual */}
             <div className="lg:col-span-6 h-72 sm:h-96 lg:h-full relative overflow-hidden">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1200&q=85"
+                src="/images/products/banarasi-brocade-saree.jpg"
                 alt="Celebrating Every Occasion Campaign"
                 aspectRatio="aspect-auto"
                 className="w-full h-full object-cover object-center"
@@ -275,7 +275,7 @@ export default function Home() {
             {/* Overlapping Detail Vignette */}
             <div className="absolute -bottom-6 -right-4 sm:-right-6 w-36 sm:w-44 aspect-square rounded-xl overflow-hidden shadow-dropdown border-3 border-white hidden sm:block">
               <ImageWithFallback
-                src="https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=500&q=80"
+                src="/images/products/mughal-velvet-kurta-set.jpg"
                 alt="Artisan Silk Weaving Detail"
                 aspectRatio="aspect-square"
                 className="w-full h-full object-cover"

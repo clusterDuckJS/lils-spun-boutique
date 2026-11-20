@@ -42,7 +42,7 @@ const megaMenuData = {
     ],
     featuredTitle: 'Ready-to-Wear Elegance',
     featuredSubtitle: 'Exquisite pre-stitched floor-length gowns and royal velvet Angrakhas.',
-    featuredImage: 'https://images.unsplash.com/photo-1566174053879-31528523f8ae?auto=format&fit=crop&w=800&q=80',
+    featuredImage: '/images/products/georgette-anarkali-gown.jpg',
     featuredHref: '/collections/ready-made'
   },
   'churidar-materials': {
@@ -75,7 +75,7 @@ const megaMenuData = {
     ],
     featuredTitle: 'Artisanal Dress Materials',
     featuredSubtitle: 'Handcrafted pure fabrics complete with woven dupattas ready for bespoke tailoring.',
-    featuredImage: 'https://images.unsplash.com/photo-1609357605129-26f69add5d6e?auto=format&fit=crop&w=800&q=80',
+    featuredImage: '/images/products/chanderi-silk-churidar.jpg',
     featuredHref: '/collections/churidar-materials'
   },
   sarees: {
@@ -108,7 +108,7 @@ const megaMenuData = {
     ],
     featuredTitle: 'The Heirloom Silk Edit',
     featuredSubtitle: 'Lustrous weaves imbued with timeless antique gold zari and pure silk purity.',
-    featuredImage: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+    featuredImage: '/images/products/rose-pink-kanjivaram-saree.jpg',
     featuredHref: '/collections/sarees'
   },
   'kids-wear': {
@@ -141,7 +141,7 @@ const megaMenuData = {
     ],
     featuredTitle: 'Traditional Kids Heritage',
     featuredSubtitle: 'Irresistibly adorable, skin-friendly traditional attire tailored for young celebrations.',
-    featuredImage: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=800&q=80',
+    featuredImage: '/images/products/girls-pattu-pavadai.jpg',
     featuredHref: '/collections/kids-wear'
   }
 };

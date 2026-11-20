@@ -145,7 +145,7 @@ export default function Collection() {
     title: category.replace('-', ' '),
     subtitle: 'Curated Boutique Garments',
     description: 'Explore hand-finished ethnic silhouettes from Lils Spun Boutique.',
-    banner: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1600&q=85'
+    banner: '/images/products/rose-pink-kanjivaram-saree.jpg'
   };
 
   const handleResetFilters = () => {

@@ -14,7 +14,7 @@ import {
   Share2
 } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
-import ImageWithFallback from '../components/ImageWithFallback';
+import ImageWithFallback, { resolveAssetUrl } from '../components/ImageWithFallback';
 import ProductGrid from '../components/ProductGrid';
 import { formatINR } from '../data/products';
 import { useProducts } from '../context/ProductContext';
@@ -131,7 +131,7 @@ export default function ProductDetails() {
                   }`}
                   aria-label={`Thumbnail ${idx + 1}`}
                 >
-                  <img src={img} alt="" className="w-full h-full object-cover" />
+                  <img src={resolveAssetUrl(img)} alt="" className="w-full h-full object-cover" />
                 </button>
               ))}
             </div>
