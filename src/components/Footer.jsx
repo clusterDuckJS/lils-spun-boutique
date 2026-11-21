@@ -81,8 +81,8 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-xs text-brand-ivory/80">
               <li>
-                <Link to="/collections/new-arrivals" className="hover:text-brand-champagne transition-colors">
-                  New Arrivals
+                <Link to="/shop" className="hover:text-brand-champagne transition-colors">
+                  All Products
                 </Link>
               </li>
               <li>
@@ -103,6 +103,11 @@ export default function Footer() {
               <li>
                 <Link to="/collections/kids-wear" className="hover:text-brand-champagne transition-colors">
                   Kids Wear
+                </Link>
+              </li>
+              <li>
+                <Link to="/collections/new-arrivals" className="hover:text-brand-champagne transition-colors">
+                  New Arrivals
                 </Link>
               </li>
             </ul>

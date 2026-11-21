@@ -80,6 +80,18 @@ export const occasions = [
 ];
 
 export const collectionMeta = {
+  'all': {
+    title: 'All Products',
+    subtitle: 'The Complete Boutique Collection',
+    description: 'Explore the complete Lils Spun Boutique collection: Ready Made, Churidar Materials, Sarees, and Kids Wear handpicked for life’s most cherished celebrations.',
+    banner: '/images/products/rose-pink-kanjivaram-saree.jpg'
+  },
+  'shop': {
+    title: 'All Products',
+    subtitle: 'The Complete Boutique Collection',
+    description: 'Explore the complete Lils Spun Boutique collection: Ready Made, Churidar Materials, Sarees, and Kids Wear handpicked for life’s most cherished celebrations.',
+    banner: '/images/products/rose-pink-kanjivaram-saree.jpg'
+  },
   'new-arrivals': {
     title: 'New Arrivals',
     subtitle: 'Freshly Spun Traditions',
@@ -111,28 +123,10 @@ export const collectionMeta = {
     banner: '/images/products/girls-pattu-pavadai.jpg'
   },
   // Backward compatibility redirects / fallbacks
-  'salwar-suits': {
-    title: 'Ready Made & Suits',
-    subtitle: 'Regal Silhouettes & Graceful Flairs',
-    description: 'Explore our Ready Made and Churidar collections for custom tailored and pre-stitched suits.',
-    banner: '/images/products/georgette-anarkali-gown.jpg'
-  },
-  'kurtas-sets': {
-    title: 'Kurtas & Sets',
-    subtitle: 'Everyday Luxury & Casual Grace',
-    description: 'Explore our Ready Made collection for contemporary coordinated sets and kurtas.',
-    banner: '/images/products/mughal-velvet-kurta-set.jpg'
-  },
-  'lehengas': {
-    title: 'Festive Ensembles',
-    subtitle: 'Heirloom Celebrations',
-    description: 'Explore our festive collections for grand celebrations.',
-    banner: '/images/products/chanderi-silk-churidar.jpg'
-  },
   'festive-wear': {
-    title: 'The Festive Edit',
-    subtitle: 'Radiance in Every Detail',
-    description: 'A tribute to celebratory moments across all our boutique categories.',
+    title: 'All Products',
+    subtitle: 'The Complete Boutique Collection',
+    description: 'Explore the complete Lils Spun Boutique collection: Ready Made, Churidar Materials, Sarees, and Kids Wear handpicked for life’s most cherished celebrations.',
     banner: '/images/products/rose-pink-kanjivaram-saree.jpg'
   },
   'accessories': {

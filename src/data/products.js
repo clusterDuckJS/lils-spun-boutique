@@ -297,7 +297,7 @@ export function getProductBySlug(slug) {
 }
 
 export function getProductsByCategory(category) {
-  if (!category || category === 'all') return products;
+  if (!category || category === 'all' || category === 'shop' || category === 'festive-wear') return products;
   if (category === 'new-arrivals') return products.filter(p => p.newArrival);
   return products.filter(p => p.category === category);
 }

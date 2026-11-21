@@ -53,7 +53,10 @@ function AppLayout() {
         <Routes>
           {/* Public Storefront Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/shop" element={<Collection />} />
+          <Route path="/collections" element={<Collection />} />
           <Route path="/collections/:category" element={<Collection />} />
+          <Route path="/products" element={<Collection />} />
           <Route path="/products/:slug" element={<ProductDetails />} />
           <Route path="/search" element={<Search />} />
           <Route path="/wishlist" element={<Wishlist />} />

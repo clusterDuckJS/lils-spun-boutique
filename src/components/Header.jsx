@@ -3,151 +3,13 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, Heart, ShoppingBag, Menu, ChevronDown, Sparkles, User, LogOut, Package, ShieldCheck } from 'lucide-react';
 import BrandLogo from './BrandLogo';
 import AnnouncementBar from './AnnouncementBar';
-import MegaMenu from './MegaMenu';
 import MobileMenu from './MobileMenu';
 import SearchOverlay from './SearchOverlay';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
-// MegaMenu data definition for the 4 core categories
-const megaMenuData = {
-  'ready-made': {
-    columns: [
-      {
-        title: 'Silhouettes & Gowns',
-        links: [
-          { label: 'All Ready Made', href: '/collections/ready-made' },
-          { label: 'Embroidered Anarkali Gowns', href: '/collections/ready-made?tag=Anarkali', badge: 'Bestseller' },
-          { label: 'Mughal Angrakha Sets', href: '/collections/ready-made?tag=Angrakha', badge: 'Signature' },
-          { label: 'Pre-Stitched Festive Coordinates', href: '/collections/ready-made' }
-        ]
-      },
-      {
-        title: 'Fabrics & Craft',
-        links: [
-          { label: 'Pure Georgette & Sequins', href: '/collections/ready-made?fabric=Georgette' },
-          { label: 'Royal Velvet & Organza', href: '/collections/ready-made?fabric=Velvet', badge: 'Winter' },
-          { label: 'Zari Cord Handwork', href: '/collections/ready-made?tag=Ready+Made' }
-        ]
-      },
-      {
-        title: 'Occasions',
-        links: [
-          { label: 'Festive Celebrations', href: '/collections/ready-made?occasion=Festive+Celebrations' },
-          { label: 'Wedding Guest Ensembles', href: '/collections/ready-made?occasion=Wedding+Guest' },
-          { label: 'Evening Soirees', href: '/collections/ready-made' }
-        ]
-      }
-    ],
-    featuredTitle: 'Ready-to-Wear Elegance',
-    featuredSubtitle: 'Exquisite pre-stitched floor-length gowns and royal velvet Angrakhas.',
-    featuredImage: '/images/products/georgette-anarkali-gown.jpg',
-    featuredHref: '/collections/ready-made'
-  },
-  'churidar-materials': {
-    columns: [
-      {
-        title: 'Unstitched Sets',
-        links: [
-          { label: 'All Churidar Materials', href: '/collections/churidar-materials' },
-          { label: 'Handloom Chanderi Silk 3-Piece', href: '/collections/churidar-materials?fabric=Chanderi', badge: 'Handloom' },
-          { label: 'Pure 100s Mulmul Cotton Sets', href: '/collections/churidar-materials?fabric=Cotton', badge: 'Breathable' },
-          { label: 'Bespoke Tailoring Fabrics', href: '/collections/churidar-materials' }
-        ]
-      },
-      {
-        title: 'Artisanal Weaves',
-        links: [
-          { label: 'Traditional Zari Butis', href: '/collections/churidar-materials?tag=Handloom' },
-          { label: 'Kashmiri Resham Yoke Work', href: '/collections/churidar-materials?tag=Kashmiri' },
-          { label: 'Kota Doria Handblock Dupattas', href: '/collections/churidar-materials' }
-        ]
-      },
-      {
-        title: 'Curated Palette',
-        links: [
-          { label: 'Sage Green & Gold', href: '/collections/churidar-materials?colour=Sage' },
-          { label: 'Pastel Lavender & Pearl', href: '/collections/churidar-materials?colour=Lavender' },
-          { label: 'Everyday Elegance', href: '/collections/churidar-materials?occasion=Everyday+Elegance' }
-        ]
-      }
-    ],
-    featuredTitle: 'Artisanal Dress Materials',
-    featuredSubtitle: 'Handcrafted pure fabrics complete with woven dupattas ready for bespoke tailoring.',
-    featuredImage: '/images/products/chanderi-silk-churidar.jpg',
-    featuredHref: '/collections/churidar-materials'
-  },
-  sarees: {
-    columns: [
-      {
-        title: 'By Weave & Heritage',
-        links: [
-          { label: 'All Sarees', href: '/collections/sarees' },
-          { label: 'Kanjivaram Pure Silk', href: '/collections/sarees?fabric=Mulberry', badge: 'Heritage' },
-          { label: 'Banarasi Brocade Silk', href: '/collections/sarees?fabric=Katan', badge: 'Royal' },
-          { label: 'Temple Zari Borders', href: '/collections/sarees?tag=Kanjivaram' }
-        ]
-      },
-      {
-        title: 'Silks & Craftsmanship',
-        links: [
-          { label: 'Pure Mulberry Silk', href: '/collections/sarees?fabric=Mulberry' },
-          { label: 'Katan Silk Sona Rupa', href: '/collections/sarees?fabric=Katan' },
-          { label: 'Handcrafted Heirlooms', href: '/collections/sarees?tag=Heirloom' }
-        ]
-      },
-      {
-        title: 'Shop by Occasion',
-        links: [
-          { label: 'Bridal & Trousseau', href: '/collections/sarees?occasion=Wedding+Guest' },
-          { label: 'Festive Celebrations', href: '/collections/sarees?occasion=Festive+Celebrations' },
-          { label: 'Intimate Ceremonies', href: '/collections/sarees?occasion=Special+Occasions' }
-        ]
-      }
-    ],
-    featuredTitle: 'The Heirloom Silk Edit',
-    featuredSubtitle: 'Lustrous weaves imbued with timeless antique gold zari and pure silk purity.',
-    featuredImage: '/images/products/rose-pink-kanjivaram-saree.jpg',
-    featuredHref: '/collections/sarees'
-  },
-  'kids-wear': {
-    columns: [
-      {
-        title: 'Traditional Attire',
-        links: [
-          { label: 'All Kids Wear', href: '/collections/kids-wear' },
-          { label: 'Girls Silk Pattu Pavadai Sets', href: '/collections/kids-wear?tag=Pattu', badge: 'Popular' },
-          { label: 'Boys Jacquard Kurta & Dhoti', href: '/collections/kids-wear?tag=Dhoti', badge: 'Festive' },
-          { label: 'Comfort Fit Silhouettes', href: '/collections/kids-wear' }
-        ]
-      },
-      {
-        title: 'Gentle Craftsmanship',
-        links: [
-          { label: 'Pure Cotton Inner Linings', href: '/collections/kids-wear?fabric=Cotton' },
-          { label: 'Soft Non-Scratchy Zari', href: '/collections/kids-wear' },
-          { label: 'Elasticated Easy-Wear Waists', href: '/collections/kids-wear' }
-        ]
-      },
-      {
-        title: 'Age Groups',
-        links: [
-          { label: 'Toddlers (2 - 3 Years)', href: '/collections/kids-wear' },
-          { label: 'Little Princes & Princesses (4 - 7 Years)', href: '/collections/kids-wear' },
-          { label: 'Young Royalty (8 - 12 Years)', href: '/collections/kids-wear' }
-        ]
-      }
-    ],
-    featuredTitle: 'Traditional Kids Heritage',
-    featuredSubtitle: 'Irresistibly adorable, skin-friendly traditional attire tailored for young celebrations.',
-    featuredImage: '/images/products/girls-pattu-pavadai.jpg',
-    featuredHref: '/collections/kids-wear'
-  }
-};
-
 export default function Header() {
-  const [activeMegaMenu, setActiveMegaMenu] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -180,9 +42,8 @@ export default function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close mega menu & account menu on page change
+  // Close mobile menu & account menu on page change
   useEffect(() => {
-    setActiveMegaMenu(null);
     setIsMobileMenuOpen(false);
     setIsAccountOpen(false);
   }, [location.pathname, location.search]);
@@ -360,10 +221,59 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-6 lg:px-8">
               <nav className="flex items-center justify-center space-x-6 xl:space-x-8 h-11 text-xs">
                 
+                {/* All Products */}
+                <Link
+                  to="/shop"
+                  className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                    location.pathname === '/shop' || location.pathname === '/collections/all' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                  }`}
+                >
+                  All Products
+                </Link>
+
+                {/* Ready Made */}
+                <Link
+                  to="/collections/ready-made"
+                  className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                    location.pathname === '/collections/ready-made' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                  }`}
+                >
+                  Ready Made
+                </Link>
+
+                {/* Churidar Materials */}
+                <Link
+                  to="/collections/churidar-materials"
+                  className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                    location.pathname === '/collections/churidar-materials' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                  }`}
+                >
+                  Churidar Materials
+                </Link>
+
+                {/* Sarees */}
+                <Link
+                  to="/collections/sarees"
+                  className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                    location.pathname === '/collections/sarees' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                  }`}
+                >
+                  Sarees
+                </Link>
+
+                {/* Kids Wear */}
+                <Link
+                  to="/collections/kids-wear"
+                  className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
+                    location.pathname === '/collections/kids-wear' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
+                  }`}
+                >
+                  Kids Wear
+                </Link>
+
                 {/* New Arrivals */}
                 <Link
                   to="/collections/new-arrivals"
-                  onMouseEnter={() => setActiveMegaMenu(null)}
                   className={`uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
                     location.pathname === '/collections/new-arrivals' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
                   }`}
@@ -371,83 +281,8 @@ export default function Header() {
                   New Arrivals
                 </Link>
 
-                {/* Ready Made */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('ready-made')}
-                >
-                  <Link
-                    to="/collections/ready-made"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/ready-made' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Ready Made
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
-                {/* Churidar Materials */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('churidar-materials')}
-                >
-                  <Link
-                    to="/collections/churidar-materials"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/churidar-materials' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Churidar Materials
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
-                {/* Sarees */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('sarees')}
-                >
-                  <Link
-                    to="/collections/sarees"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/sarees' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Sarees
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
-                {/* Kids Wear */}
-                <div
-                  className="relative h-full flex items-center"
-                  onMouseEnter={() => setActiveMegaMenu('kids-wear')}
-                >
-                  <Link
-                    to="/collections/kids-wear"
-                    className={`flex items-center gap-1 uppercase tracking-[0.16em] font-medium transition-colors hover:text-brand-rose py-2 whitespace-nowrap ${
-                      location.pathname === '/collections/kids-wear' ? 'text-brand-rose font-semibold' : 'text-brand-navy'
-                    }`}
-                  >
-                    Kids Wear
-                    <ChevronDown className="w-3 h-3 opacity-60" />
-                  </Link>
-                </div>
-
               </nav>
             </div>
-
-            {/* MegaMenu Dropdown Pane */}
-            {activeMegaMenu && megaMenuData[activeMegaMenu] && (
-              <div onMouseLeave={() => setActiveMegaMenu(null)}>
-                <MegaMenu
-                  category={megaMenuData[activeMegaMenu]}
-                  isOpen={Boolean(activeMegaMenu)}
-                  onClose={() => setActiveMegaMenu(null)}
-                />
-              </div>
-            )}
           </div>
         </div>
 

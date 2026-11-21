@@ -116,7 +116,7 @@ export default function About() {
         </p>
         <div>
           <Link
-            to="/collections/festive-wear"
+            to="/shop"
             className="inline-flex items-center gap-2.5 px-8 py-4 bg-brand-champagne hover:bg-brand-champagne-light text-brand-navy rounded-full text-xs uppercase tracking-widest font-semibold shadow-card transition-all"
           >
             <span>Explore Collections</span>

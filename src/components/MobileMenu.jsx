@@ -10,14 +10,12 @@ export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
   const { wishlistCount } = useWishlist();
   const { itemCount } = useCart();
   const { isAuthenticated, profile, signOut } = useAuth();
-  const [expandedCategory, setExpandedCategory] = useState(null);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = '';
-      setExpandedCategory(null);
     }
     return () => {
       document.body.style.overflow = '';
@@ -28,60 +26,32 @@ export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
 
   const menuSections = [
     {
-      title: 'New Arrivals',
-      href: '/collections/new-arrivals',
-      isDirect: true,
-      badge: 'Fresh'
+      title: 'All Products',
+      href: '/shop',
+      badge: 'All'
     },
     {
       title: 'Ready Made',
-      id: 'ready-made',
-      href: '/collections/ready-made',
-      items: [
-        { label: 'View All Ready Made', href: '/collections/ready-made' },
-        { label: 'Embroidered Anarkali Gowns', href: '/collections/ready-made?tag=Anarkali' },
-        { label: 'Mughal Angrakha Sets', href: '/collections/ready-made?tag=Angrakha' },
-        { label: 'Velvet Festive Coordinates', href: '/collections/ready-made?fabric=Velvet' }
-      ]
+      href: '/collections/ready-made'
     },
     {
       title: 'Churidar Materials',
-      id: 'churidar-materials',
-      href: '/collections/churidar-materials',
-      items: [
-        { label: 'View All Dress Materials', href: '/collections/churidar-materials' },
-        { label: 'Handloom Chanderi Sets', href: '/collections/churidar-materials?fabric=Chanderi' },
-        { label: 'Pure Mulmul Cotton 3-Piece', href: '/collections/churidar-materials?fabric=Cotton' },
-        { label: 'Kashmiri Embroidered Sets', href: '/collections/churidar-materials?tag=Kashmiri' }
-      ]
+      href: '/collections/churidar-materials'
     },
     {
       title: 'Sarees',
-      id: 'sarees',
-      href: '/collections/sarees',
-      items: [
-        { label: 'View All Sarees', href: '/collections/sarees' },
-        { label: 'Kanjivaram Pure Silk', href: '/collections/sarees?fabric=Mulberry' },
-        { label: 'Banarasi Brocade Silk', href: '/collections/sarees?fabric=Katan' },
-        { label: 'Heirloom Temple Borders', href: '/collections/sarees?tag=Kanjivaram' }
-      ]
+      href: '/collections/sarees'
     },
     {
       title: 'Kids Wear',
-      id: 'kids-wear',
-      href: '/collections/kids-wear',
-      items: [
-        { label: 'View All Kids Wear', href: '/collections/kids-wear' },
-        { label: 'Girls Silk Pattu Pavadai', href: '/collections/kids-wear?tag=Pattu' },
-        { label: 'Boys Kurta & Dhoti Sets', href: '/collections/kids-wear?tag=Dhoti' },
-        { label: 'Festive Children Attire', href: '/collections/kids-wear' }
-      ]
+      href: '/collections/kids-wear'
+    },
+    {
+      title: 'New Arrivals',
+      href: '/collections/new-arrivals',
+      badge: 'Fresh'
     }
   ];
-
-  const toggleSection = (id) => {
-    setExpandedCategory(expandedCategory === id ? null : id);
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex">
@@ -179,51 +149,21 @@ export default function MobileMenu({ isOpen, onClose, onOpenSearch }) {
         <div className="flex-1 overflow-y-auto px-4 py-4 space-y-1">
           {menuSections.map((sec, idx) => (
             <div key={idx} className="border-b border-brand-border/40 last:border-0 pb-1">
-              {sec.isDirect ? (
-                <Link
-                  to={sec.href}
-                  onClick={onClose}
-                  className="flex items-center justify-between py-3 px-2 text-sm font-medium text-brand-navy hover:text-brand-rose transition-colors"
-                >
-                  <span className="font-serif text-base">{sec.title}</span>
+              <Link
+                to={sec.href}
+                onClick={onClose}
+                className="flex items-center justify-between py-3 px-2 text-sm font-medium text-brand-navy hover:text-brand-rose transition-colors"
+              >
+                <span className="font-serif text-base">{sec.title}</span>
+                <div className="flex items-center gap-1.5">
                   {sec.badge && (
                     <span className="text-[10px] px-2 py-0.5 bg-brand-blush/60 text-brand-rose-dark font-sans rounded-full uppercase tracking-wider">
                       {sec.badge}
                     </span>
                   )}
-                </Link>
-              ) : (
-                <div>
-                  <button
-                    onClick={() => toggleSection(sec.id)}
-                    className="w-full flex items-center justify-between py-3 px-2 text-sm font-medium text-brand-navy hover:text-brand-rose transition-colors"
-                  >
-                    <span className="font-serif text-base">{sec.title}</span>
-                    <ChevronDown
-                      className={`w-4 h-4 text-brand-muted transition-transform duration-200 ${
-                        expandedCategory === sec.id ? 'rotate-180 text-brand-navy' : ''
-                      }`}
-                    />
-                  </button>
-
-                  {/* Expandable sub-items */}
-                  {expandedCategory === sec.id && (
-                    <div className="pl-4 pr-2 pb-2 space-y-1 bg-white/60 rounded-lg py-2 my-1 animate-in slide-in-from-top-1">
-                      {sec.items.map((sub, sIdx) => (
-                        <Link
-                          key={sIdx}
-                          to={sub.href}
-                          onClick={onClose}
-                          className="flex items-center justify-between py-2 px-2 text-xs text-brand-text/80 hover:text-brand-navy hover:font-medium transition-colors"
-                        >
-                          <span>{sub.label}</span>
-                          <ChevronRight className="w-3 h-3 text-brand-muted/60" />
-                        </Link>
-                      ))}
-                    </div>
-                  )}
+                  <ChevronRight className="w-4 h-4 text-brand-muted/60" />
                 </div>
-              )}
+              </Link>
             </div>
           ))}
 

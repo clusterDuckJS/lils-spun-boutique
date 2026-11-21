@@ -28,7 +28,7 @@ export default function HeroSection() {
             {/* CTAs */}
             <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
               <Link
-                to="/collections/festive-wear"
+                to="/shop"
                 className="w-full sm:w-auto px-8 py-4 bg-brand-navy hover:bg-brand-navy-light text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-card hover:shadow-elevated transition-all group"
               >
                 <span>Explore Collection</span>

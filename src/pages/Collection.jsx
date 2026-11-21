@@ -10,7 +10,8 @@ import { useProducts } from '../context/ProductContext';
 import { collectionMeta } from '../data/collections';
 
 export default function Collection() {
-  const { category = 'new-arrivals' } = useParams();
+  const { category: routeCategory } = useParams();
+  const category = routeCategory || 'all';
   const [searchParams, setSearchParams] = useSearchParams();
   const { getProductsByCategory } = useProducts();
 
@@ -142,8 +143,8 @@ export default function Collection() {
 
   const displayedProducts = sortedProducts.slice(0, visibleCount);
   const meta = collectionMeta[category] || {
-    title: category.replace('-', ' '),
-    subtitle: 'Curated Boutique Garments',
+    title: category === 'all' || category === 'shop' ? 'All Products' : category.replace(/-/g, ' '),
+    subtitle: 'The Complete Boutique Collection',
     description: 'Explore hand-finished ethnic silhouettes from Lils Spun Boutique.',
     banner: '/images/products/rose-pink-kanjivaram-saree.jpg'
   };
@@ -172,10 +173,11 @@ export default function Collection() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
       {/* Breadcrumbs */}
       <Breadcrumbs
-        items={[
-          { label: 'Collections', href: '/collections/sarees' },
-          { label: meta.title }
-        ]}
+        items={
+          category === 'all' || category === 'shop'
+            ? [{ label: 'Shop', href: '/shop' }, { label: 'All Products' }]
+            : [{ label: 'Shop', href: '/shop' }, { label: meta.title }]
+        }
       />
 
       {/* Collection Hero Banner */}
