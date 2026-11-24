@@ -3,6 +3,7 @@ import { Sparkles, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const announcements = [
+  { text: 'Complimentary All-India Express Shipping on All Orders', link: '/pages/shipping' },
   { text: 'Timeless Traditions, Beautifully Reimagined', link: '/collections/new-arrivals' },
   { text: 'Explore Ready Made, Churidar Materials, Sarees & Kids Wear', link: '/collections/ready-made' },
   { text: 'Artisanal Weaves & Bespoke Silhouettes', link: '/about' }

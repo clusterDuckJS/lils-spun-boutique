@@ -88,9 +88,9 @@ export function CartProvider({ children }) {
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  // Free shipping on orders over ₹4,999
-  const shippingFee = subtotal === 0 ? 0 : subtotal >= 4999 ? 0 : 250;
-  const grandTotal = subtotal + shippingFee;
+  // 100% Complimentary Free Shipping on all boutique orders
+  const shippingFee = 0;
+  const grandTotal = subtotal;
 
   return (
     <CartContext.Provider

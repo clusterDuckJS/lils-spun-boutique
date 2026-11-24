@@ -549,11 +549,11 @@ export default function Checkout() {
               <div>
                 <span className="text-brand-muted block">Boutique Shipping</span>
                 <span className="text-[10px] text-brand-muted">
-                  {shippingFee === 0 ? 'Complimentary on orders ≥ ₹4,999' : 'Standard express dispatch'}
+                  Complimentary express dispatch across India
                 </span>
               </div>
-              <span className="font-semibold text-brand-navy font-sans">
-                {shippingFee === 0 ? 'FREE' : formatINR(shippingFee)}
+              <span className="font-semibold text-emerald-700 font-sans tracking-wide">
+                FREE
               </span>
             </div>
             <div className="pt-3 border-t border-brand-border flex justify-between items-baseline">

@@ -347,7 +347,7 @@ export default function ProductDetails() {
             <div className="pt-4 border-t border-brand-border/60 grid grid-cols-2 gap-3 text-xs text-brand-text/80">
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-brand-champagne shrink-0" />
-                <span>Complimentary Delivery on orders &gt; ₹4,999</span>
+                <span>Complimentary All-India Delivery</span>
               </div>
               <div className="flex items-center gap-2">
                 <RotateCcw className="w-4 h-4 text-brand-champagne shrink-0" />

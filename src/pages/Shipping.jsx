@@ -58,10 +58,10 @@ export default function Shipping() {
           </h2>
           <ul className="list-disc list-inside space-y-2 text-brand-text/80 pl-1">
             <li>
-              <strong>Complimentary Shipping:</strong> We offer <strong>FREE standard delivery</strong> on all orders of <strong>₹4,999 and above</strong> anywhere in India.
+              <strong>Complimentary Shipping:</strong> We offer <strong>100% FREE standard delivery</strong> on all orders across India, with no minimum order value required.
             </li>
             <li>
-              <strong>Standard Shipping Fee:</strong> For orders below ₹4,999, a nominal flat shipping fee of <strong>₹250</strong> is applied at checkout to cover insured express handling and secure transit.
+              <strong>Insured Express Handling:</strong> All boutique orders include complimentary insured transit and protective bespoke packaging at zero extra cost.
             </li>
             <li>
               <strong>No Hidden Charges:</strong> All prices displayed on our website are inclusive of applicable Goods and Services Tax (GST).

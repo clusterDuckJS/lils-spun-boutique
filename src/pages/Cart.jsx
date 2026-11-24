@@ -164,19 +164,18 @@ export default function Cart() {
                 <div>
                   <span>Boutique Shipping</span>
                   <p className="text-[10px] text-brand-muted">
-                    {subtotal >= 4999 ? 'Complimentary delivery applied' : 'Standard courier dispatch'}
+                    Complimentary express delivery across India
                   </p>
                 </div>
-                <span className="font-semibold text-brand-navy font-sans">
-                  {shippingFee === 0 ? 'FREE' : formatINR(shippingFee)}
+                <span className="font-semibold text-emerald-700 font-sans tracking-wide">
+                  FREE
                 </span>
               </div>
 
-              {subtotal < 4999 && (
-                <div className="p-2.5 rounded-lg bg-brand-blush/30 border border-brand-blush/60 text-[11px] text-brand-rose-dark leading-tight">
-                  Add <strong>{formatINR(4999 - subtotal)}</strong> more for complimentary express delivery!
-                </div>
-              )}
+              <div className="p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200/60 text-[11px] text-emerald-800 flex items-center justify-between">
+                <span>Complimentary Insured Delivery</span>
+                <span className="font-semibold font-mono text-[10px] uppercase tracking-wider text-emerald-700 bg-emerald-100/60 px-1.5 py-0.5 rounded">All Orders</span>
+              </div>
             </div>
 
             <div className="pt-4 border-t border-brand-border flex justify-between items-baseline">
