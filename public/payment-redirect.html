@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verifying Payment &bull; Lil's Spun Boutique</title>
+  <style>
+    body {
+      background-color: #FAF8F5;
+      color: #0F1D2F;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: #FFFFFF;
+      border: 1px solid #E2D9CE;
+      border-radius: 24px;
+      padding: 40px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(15, 29, 47, 0.05);
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 3px solid rgba(15, 29, 47, 0.1);
+      border-top-color: #0F1D2F;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 24px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    h2 {
+      margin: 0 0 10px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    p {
+      margin: 0;
+      font-size: 13px;
+      color: #64748B;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="spinner"></div>
+    <h2>Verifying Payment</h2>
+    <p>Please wait a moment while we confirm your transaction with PhonePe and prepare your order confirmation...</p>
+  </div>
+  <script>
+    // Forward all query parameters (including orderId, merchantOrderId, etc.) into the React HashRouter
+    const search = window.location.search || '';
+    window.location.replace('/#/payment-status' + search);
+  </script>
+</body>
+</html>

@@ -21,6 +21,7 @@ import Search from './pages/Search';
 import Wishlist from './pages/Wishlist';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
+import PaymentStatus from './pages/PaymentStatus';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import FAQ from './pages/FAQ';
@@ -62,6 +63,7 @@ function AppLayout() {
           <Route path="/wishlist" element={<Wishlist />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
+          <Route path="/payment-status" element={<PaymentStatus />} />
           
           {/* Auth & Patron Routes */}
           <Route path="/login" element={<Login />} />

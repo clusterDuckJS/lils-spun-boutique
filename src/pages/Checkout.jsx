@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { CheckCircle2, ShoppingBag, ShieldCheck, ArrowRight, Lock, Sparkles, MapPin, Loader2, User, CreditCard, Truck } from 'lucide-react';
+import { CheckCircle2, ShoppingBag, ShieldCheck, ArrowRight, Lock, Sparkles, MapPin, Loader2, User, CreditCard, Truck, AlertCircle } from 'lucide-react';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { formatINR } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
-import { createOrder } from '../services/orderService';
+import { createOrder, initiatePhonePePayment } from '../services/orderService';
 
 export default function Checkout() {
   const { items, grandTotal, subtotal, shippingFee, clearCart } = useCart();
@@ -14,6 +14,8 @@ export default function Checkout() {
 
   const [isOrdered, setIsOrdered] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
   const [orderRef, setOrderRef] = useState('');
   const [saveToProfile, setSaveToProfile] = useState(true);
 
@@ -47,6 +49,7 @@ export default function Checkout() {
   const handlePlaceOrder = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setPaymentError('');
     const ref = `LILS-${Math.floor(100000 + Math.random() * 900000)}`;
     setOrderRef(ref);
 
@@ -60,6 +63,59 @@ export default function Checkout() {
       image: item.product?.images?.[0] || ''
     }));
 
+    const isOnlinePayment = formData.paymentMethod === 'online' || formData.paymentMethod === 'upi';
+
+    // 1. ONLINE PAYMENT VIA PHONEPE
+    if (isOnlinePayment) {
+      setRedirecting(true);
+
+      const redirectUrl = `${window.location.origin}/#/payment-status?orderRef=${encodeURIComponent(ref)}`;
+
+      const orderPayload = {
+        orderRef: ref,
+        customerName: formData.name,
+        customerEmail: formData.email,
+        customerPhone: formData.phone,
+        shippingAddress: formData.address,
+        city: formData.city,
+        state: formData.state,
+        pincode: formData.pincode,
+        paymentMethod: 'phonepe_online',
+        subtotal,
+        shippingFee,
+        grandTotal,
+        items: itemsPayload
+      };
+
+      if (isAuthenticated && saveToProfile) {
+        updateProfile({
+          fullName: formData.name,
+          phone: formData.phone,
+          address: formData.address,
+          city: formData.city,
+          state: formData.state,
+          pincode: formData.pincode
+        });
+      }
+
+      const result = await initiatePhonePePayment(orderPayload, redirectUrl);
+
+      if (result && result.success && result.redirectUrl) {
+        // Handover to PhonePe secure hosted page
+        window.location.href = result.redirectUrl;
+        return;
+      } else {
+        setIsSubmitting(false);
+        setRedirecting(false);
+        setPaymentError(
+          result?.error ||
+          'Unable to initialize PhonePe payment session. Please verify details or try Cash on Delivery.'
+        );
+        return;
+      }
+    }
+
+    // 2. CASH ON DELIVERY / STUDIO PICKUP
     await createOrder({
       orderRef: ref,
       customerName: formData.name,
@@ -416,20 +472,41 @@ export default function Checkout() {
               </div>
             </div>
 
+            {/* Payment Initiation Error Notice */}
+            {paymentError && (
+              <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-xs text-red-800 flex items-start gap-2.5 animate-in fade-in">
+                <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                <div className="space-y-1">
+                  <strong className="font-semibold block">Payment Gateway Notice</strong>
+                  <p>{paymentError}</p>
+                </div>
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSubmitting || redirecting}
               className="w-full py-4 bg-brand-navy hover:bg-brand-navy-light disabled:opacity-75 text-brand-ivory rounded-full text-xs uppercase tracking-widest font-semibold flex items-center justify-center gap-2 shadow-card hover:shadow-elevated transition-all"
             >
-              {isSubmitting ? (
+              {redirecting ? (
+                <>
+                  <Loader2 className="w-4 h-4 text-brand-champagne animate-spin" />
+                  <span>Connecting to PhonePe...</span>
+                </>
+              ) : isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 text-brand-champagne animate-spin" />
                   <span>Confirming Order...</span>
                 </>
+              ) : formData.paymentMethod === 'online' || formData.paymentMethod === 'upi' ? (
+                <>
+                  <Lock className="w-4 h-4 text-brand-champagne" />
+                  <span>Pay & Place Order via PhonePe ({formatINR(grandTotal)})</span>
+                </>
               ) : (
                 <>
                   <Lock className="w-4 h-4 text-brand-champagne" />
-                  <span>Place Order ({formatINR(grandTotal)})</span>
+                  <span>Confirm COD Order ({formatINR(grandTotal)})</span>
                 </>
               )}
             </button>
@@ -501,6 +578,32 @@ export default function Checkout() {
           </div>
         </div>
       </div>
+
+      {/* Redirecting to PhonePe Overlay */}
+      {redirecting && (
+        <div className="fixed inset-0 bg-brand-navy/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center space-y-4 shadow-elevated border border-brand-champagne/40">
+            <div className="w-16 h-16 rounded-full bg-brand-navy text-brand-champagne mx-auto flex items-center justify-center">
+              <Loader2 className="w-8 h-8 animate-spin text-brand-champagne" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-widest text-brand-rose">
+                PhonePe Payment Gateway
+              </span>
+              <h3 className="font-serif text-lg text-brand-navy font-normal mt-1">
+                Connecting to Secure Gateway...
+              </h3>
+              <p className="text-xs text-brand-muted mt-1 leading-relaxed">
+                Please wait while we redirect you to PhonePe to complete your transaction safely.
+              </p>
+            </div>
+            <div className="flex items-center justify-center gap-1.5 text-[11px] text-emerald-700 font-medium pt-2 border-t border-brand-border/60">
+              <ShieldCheck className="w-4 h-4 text-emerald-600" />
+              <span>256-Bit SSL Encrypted Checkout</span>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

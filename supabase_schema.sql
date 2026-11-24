@@ -51,6 +51,10 @@ CREATE TABLE IF NOT EXISTS public.orders (
     grand_total NUMERIC NOT NULL,
     items JSONB NOT NULL DEFAULT '[]'::jsonb,
     status TEXT DEFAULT 'confirmed',
+    payment_status TEXT DEFAULT 'pending',
+    phonepe_order_id TEXT,
+    transaction_id TEXT,
+    payment_details JSONB DEFAULT '{}'::jsonb,
     created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
