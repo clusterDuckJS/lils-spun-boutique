@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { CheckCircle2, Heart, ShoppingBag, X } from 'lucide-react';
+import { CheckCircle2, Heart, ShoppingBag, X, AlertCircle } from 'lucide-react';
 
 const ToastContext = createContext(null);
 
@@ -17,12 +17,20 @@ export function ToastProvider({ children }) {
     }, 3500);
   }, []);
 
+  const showToast = useCallback((titleOrOptions, type = 'info') => {
+    if (typeof titleOrOptions === 'string') {
+      addToast({ title: titleOrOptions, type });
+    } else if (titleOrOptions && typeof titleOrOptions === 'object') {
+      addToast(titleOrOptions);
+    }
+  }, [addToast]);
+
   const removeToast = useCallback((id) => {
     setToasts((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   return (
-    <ToastContext.Provider value={{ addToast, removeToast }}>
+    <ToastContext.Provider value={{ addToast, showToast, removeToast }}>
       {children}
       {/* Toast container */}
       <div 
@@ -37,7 +45,8 @@ export function ToastProvider({ children }) {
             <div className="shrink-0 mt-0.5 text-brand-champagne">
               {toast.type === 'cart' && <ShoppingBag className="w-5 h-5" />}
               {toast.type === 'wishlist' && <Heart className="w-5 h-5 fill-brand-rose text-brand-rose" />}
-              {toast.type !== 'cart' && toast.type !== 'wishlist' && <CheckCircle2 className="w-5 h-5" />}
+              {toast.type === 'error' && <AlertCircle className="w-5 h-5 text-red-400" />}
+              {toast.type !== 'cart' && toast.type !== 'wishlist' && toast.type !== 'error' && <CheckCircle2 className="w-5 h-5" />}
             </div>
             <div className="flex-1">
               <h4 className="font-serif text-sm font-medium tracking-wide text-brand-ivory">{toast.title}</h4>
