@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Plus,
   Search,
@@ -21,7 +21,9 @@ import {
   Tag,
   AlertTriangle,
   FileCheck2,
-  PackageCheck
+  PackageCheck,
+  Truck,
+  ShoppingBag
 } from 'lucide-react';
 import { useProducts } from '../../context/ProductContext';
 import { useAdminAuth } from '../../context/AdminAuthContext';
@@ -29,17 +31,35 @@ import { useToast } from '../../context/ToastContext';
 import { formatINR } from '../../data/products';
 import { VALID_CATEGORIES, CATEGORY_NAMES } from '../../services/productService';
 import { isSupabaseConfigured } from '../../lib/supabase';
+import { getAllOrders } from '../../services/orderService';
 import ProductFormModal from './ProductFormModal';
 import DatabaseSyncModal from './DatabaseSyncModal';
+import OrdersManagement from './OrdersManagement';
 import BrandLogo from '../../components/BrandLogo';
 
 export default function AdminDashboard() {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('tab') || 'products'; // 'products' | 'orders'
+
   const { products, loading, addProduct, editProduct, removeProduct, resetAllProducts, refreshProducts } = useProducts();
   const { adminUser, logoutAdmin } = useAdminAuth();
   const { showToast } = useToast();
 
-  // Filters & Search
+  const [orderCount, setOrderCount] = useState(0);
+
+  // Fetch orders count for tab badge
+  useEffect(() => {
+    async function loadOrderCount() {
+      try {
+        const ords = await getAllOrders();
+        setOrderCount(ords.length);
+      } catch (_) {}
+    }
+    loadOrderCount();
+  }, [activeTab]);
+
+  // Filters & Search for Products
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [stockFilter, setStockFilter] = useState('all'); // 'all', 'in-stock', 'out-of-stock'
@@ -222,355 +242,411 @@ export default function AdminDashboard() {
       {/* Main Content Area */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 space-y-8">
         
-        {/* Page Title & Quick Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-brand-rose font-semibold mb-1">
-              <ShieldCheck className="w-4 h-4" />
-              <span>Boutique Inventory &amp; Listings</span>
-            </div>
-            <h1 className="font-serif text-2xl sm:text-3xl text-brand-navy font-normal">
-              Product Catalogue Management
-            </h1>
-            <p className="text-xs sm:text-sm text-brand-muted font-light mt-0.5">
-              Manage listings across the 4 core categories: Ready made, Churidar materials, Sarees, and Kids wear.
-            </p>
+        {/* Navigation Tabs (Products Catalogue vs Orders & Fulfillment) */}
+        <div className="flex flex-wrap items-center justify-between gap-4 border-b border-brand-border/60 pb-4">
+          <div className="flex items-center gap-2.5">
+            
+            <button
+              type="button"
+              onClick={() => setSearchParams({ tab: 'products' })}
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-semibold uppercase tracking-wider transition-all ${
+                activeTab === 'products'
+                  ? 'bg-brand-navy text-brand-champagne shadow-md ring-2 ring-brand-navy/10'
+                  : 'bg-white border border-brand-border text-brand-navy hover:bg-brand-ivory'
+              }`}
+            >
+              <Layers className="w-4 h-4" />
+              <span>Products Catalogue</span>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                activeTab === 'products' ? 'bg-brand-champagne text-brand-navy' : 'bg-brand-navy/10 text-brand-navy'
+              }`}>
+                {products.length}
+              </span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSearchParams({ tab: 'orders' })}
+              className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-xs font-semibold uppercase tracking-wider transition-all ${
+                activeTab === 'orders'
+                  ? 'bg-brand-navy text-brand-champagne shadow-md ring-2 ring-brand-navy/10'
+                  : 'bg-white border border-brand-border text-brand-navy hover:bg-brand-ivory'
+              }`}
+            >
+              <Truck className="w-4 h-4" />
+              <span>Orders &amp; Fulfillment</span>
+              {orderCount > 0 && (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                  activeTab === 'orders' ? 'bg-brand-champagne text-brand-navy' : 'bg-brand-rose text-white'
+                }`}>
+                  {orderCount}
+                </span>
+              )}
+            </button>
+
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               type="button"
               onClick={() => setSqlModalOpen(true)}
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 bg-white border border-brand-border hover:border-brand-navy text-xs font-semibold text-brand-navy rounded-xl shadow-2xs hover:shadow-xs transition-all"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-white border border-brand-border hover:border-brand-navy text-xs font-semibold text-brand-navy rounded-xl shadow-2xs hover:shadow-xs transition-all"
             >
-              <Database className="w-4 h-4 text-brand-rose" />
-              <span>Database &amp; SQL Setup</span>
+              <Database className="w-3.5 h-3.5 text-brand-rose" />
+              <span>Database Setup</span>
             </button>
 
-            <button
-              type="button"
-              onClick={handleAddNew}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-brand-navy hover:bg-brand-navy-light text-brand-champagne rounded-xl text-xs uppercase tracking-luxury font-semibold shadow-md transition-all hover:shadow-lg cursor-pointer"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add New Listing</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Analytics & Overview Metrics Cards */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
-            <div className="flex items-center justify-between text-brand-muted mb-2">
-              <span className="text-xs uppercase tracking-wider font-semibold">Total Listings</span>
-              <Layers className="w-4 h-4 text-brand-rose" />
-            </div>
-            <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{stats.total}</p>
-            <p className="text-[11px] text-brand-muted mt-1 font-light">
-              2 per category across 4 categories
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
-            <div className="flex items-center justify-between text-brand-muted mb-2">
-              <span className="text-xs uppercase tracking-wider font-semibold">In Stock</span>
-              <PackageCheck className="w-4 h-4 text-emerald-600" />
-            </div>
-            <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{stats.inStock}</p>
-            <p className="text-[11px] text-emerald-700 font-light mt-1">
-              Active for patron purchasing
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
-            <div className="flex items-center justify-between text-brand-muted mb-2">
-              <span className="text-xs uppercase tracking-wider font-semibold">Featured Edit</span>
-              <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
-            </div>
-            <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{stats.featured}</p>
-            <p className="text-[11px] text-brand-muted font-light mt-1">
-              Spotlighted on storefront homepage
-            </p>
-          </div>
-
-          <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
-            <div className="flex items-center justify-between text-brand-muted mb-2">
-              <span className="text-xs uppercase tracking-wider font-semibold">Avg. Price</span>
-              <Sparkles className="w-4 h-4 text-brand-champagne" />
-            </div>
-            <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{formatINR(stats.avgPrice)}</p>
-            <p className="text-[11px] text-brand-muted font-light mt-1">
-              Boutique handcrafted luxury
-            </p>
-          </div>
-
-        </div>
-
-        {/* Category Breakdown Badges */}
-        <div className="bg-white rounded-2xl p-4 border border-brand-border shadow-2xs flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-semibold text-brand-navy uppercase tracking-wider">
-            Catalogue Categories:
-          </span>
-          <div className="flex flex-wrap items-center gap-2">
-            {VALID_CATEGORIES.map((catKey) => (
-              <span
-                key={catKey}
-                className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-brand-ivory border border-brand-border font-medium text-brand-navy"
-              >
-                <span>{CATEGORY_NAMES[catKey]}</span>
-                <span className="px-1.5 py-0.2 rounded-full bg-brand-navy text-brand-champagne text-[10px] font-bold">
-                  {stats.catCounts[catKey] || 0}
-                </span>
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Filter Bar & Search Controls */}
-        <div className="bg-white rounded-2xl p-4 border border-brand-border shadow-2xs space-y-3">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-            
-            {/* Search Input */}
-            <div className="relative flex-1 max-w-md">
-              <Search className="w-4 h-4 text-brand-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search listings by title, fabric, or tag..."
-                className="w-full pl-10 pr-4 py-2 bg-brand-ivory/40 border border-brand-border rounded-xl text-xs sm:text-sm text-brand-navy placeholder-brand-muted/60 focus:outline-none focus:border-brand-rose"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted hover:text-brand-navy"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            {/* Quick stock status filter */}
-            <div className="flex items-center gap-2 shrink-0">
-              <span className="text-xs text-brand-muted font-medium">Stock:</span>
-              <select
-                value={stockFilter}
-                onChange={(e) => setStockFilter(e.target.value)}
-                className="px-3 py-1.5 bg-brand-ivory/50 border border-brand-border rounded-xl text-xs text-brand-navy focus:outline-none focus:border-brand-rose"
-              >
-                <option value="all">All Items</option>
-                <option value="in-stock">In Stock Only</option>
-                <option value="out-of-stock">Out of Stock</option>
-              </select>
-            </div>
-
-          </div>
-
-          {/* Category Tabs */}
-          <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 border-t border-brand-border/60">
-            <button
-              type="button"
-              onClick={() => setSelectedCategory('all')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
-                selectedCategory === 'all'
-                  ? 'bg-brand-navy text-brand-champagne shadow-2xs'
-                  : 'bg-brand-ivory/60 text-brand-navy hover:bg-brand-ivory border border-brand-border'
-              }`}
-            >
-              All Categories ({products.length})
-            </button>
-
-            {VALID_CATEGORIES.map((catKey) => (
-              <button
-                key={catKey}
-                type="button"
-                onClick={() => setSelectedCategory(catKey)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
-                  selectedCategory === catKey
-                    ? 'bg-brand-navy text-brand-champagne shadow-2xs'
-                    : 'bg-brand-ivory/60 text-brand-navy hover:bg-brand-ivory border border-brand-border'
-                }`}
-              >
-                {CATEGORY_NAMES[catKey]} ({stats.catCounts[catKey] || 0})
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Listings Table / Cards */}
-        <div className="bg-white rounded-3xl border border-brand-border shadow-luxury overflow-hidden">
-          
-          <div className="px-6 py-4 border-b border-brand-border bg-brand-ivory/40 flex items-center justify-between">
-            <p className="text-xs uppercase tracking-wider font-semibold text-brand-navy">
-              Showing {filteredProducts.length} of {products.length} Products
-            </p>
-            <button
-              type="button"
-              onClick={() => refreshProducts()}
-              className="inline-flex items-center gap-1.5 text-xs text-brand-rose hover:text-brand-navy transition-colors font-medium"
-            >
-              <RefreshCw className="w-3.5 h-3.5" />
-              <span>Refresh Listings</span>
-            </button>
-          </div>
-
-          {filteredProducts.length === 0 ? (
-            <div className="text-center py-16 px-4">
-              <div className="w-14 h-14 rounded-2xl bg-brand-ivory border border-brand-border flex items-center justify-center mx-auto mb-3 text-brand-muted">
-                <Search className="w-6 h-6" />
-              </div>
-              <h3 className="font-serif text-lg text-brand-navy font-normal mb-1">
-                No matching boutique listings found
-              </h3>
-              <p className="text-xs text-brand-muted max-w-sm mx-auto mb-4 font-light">
-                Try adjusting your search keywords or category filters, or add a new handcrafted listing.
-              </p>
+            {activeTab === 'products' && (
               <button
                 type="button"
                 onClick={handleAddNew}
-                className="px-4 py-2 bg-brand-navy text-brand-champagne rounded-xl text-xs uppercase tracking-wider font-semibold"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-navy hover:bg-brand-navy-light text-brand-champagne rounded-xl text-xs uppercase tracking-luxury font-semibold shadow-md transition-all hover:shadow-lg cursor-pointer"
               >
-                + Add First Listing
+                <Plus className="w-3.5 h-3.5" />
+                <span>Add Listing</span>
               </button>
-            </div>
-          ) : (
-            <div className="divide-y divide-brand-border">
-              {filteredProducts.map((product) => {
-                const primaryImage = product.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
-                const isWebp = primaryImage.includes('webp') || primaryImage.startsWith('data:image/webp');
-
-                return (
-                  <div
-                    key={product.id}
-                    className="p-4 sm:p-5 hover:bg-brand-ivory/30 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
-                  >
-                    
-                    {/* Left: Thumbnail & Details */}
-                    <div className="flex items-start gap-4 flex-1 min-w-0">
-                      
-                      {/* Thumbnail with WebP indicator */}
-                      <div className="relative w-16 h-20 sm:w-20 sm:h-24 rounded-xl overflow-hidden bg-brand-ivory border border-brand-border shrink-0 shadow-2xs">
-                        <img
-                          src={primaryImage}
-                          alt={product.name}
-                          className="w-full h-full object-cover"
-                        />
-                        <span className="absolute bottom-1 right-1 text-[9px] font-mono font-bold bg-black/75 text-white px-1.5 py-0.2 rounded">
-                          WEBP
-                        </span>
-                      </div>
-
-                      {/* Text Details */}
-                      <div className="min-w-0 flex-1 space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-brand-blush/40 text-brand-rose border border-brand-rose/20">
-                            {product.categoryName || CATEGORY_NAMES[product.category] || product.category}
-                          </span>
-
-                          {product.newArrival && (
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-brand-champagne/30 text-brand-navy border border-brand-champagne/40">
-                              New Arrival
-                            </span>
-                          )}
-
-                          {product.featured && (
-                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
-                              <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                              <span>Featured</span>
-                            </span>
-                          )}
-                        </div>
-
-                        <h3 className="font-serif text-base text-brand-navy font-normal truncate">
-                          {product.name}
-                        </h3>
-
-                        <p className="text-xs text-brand-muted truncate font-light">
-                          {product.fabric || 'Artisanal Handcraft'} • {product.occasion || 'Festive'}
-                        </p>
-
-                        <div className="flex items-center gap-2 pt-0.5">
-                          <span className="text-sm font-semibold text-brand-navy">
-                            {formatINR(product.price)}
-                          </span>
-                          {product.originalPrice && product.originalPrice > product.price && (
-                            <span className="text-xs text-brand-muted line-through">
-                              {formatINR(product.originalPrice)}
-                            </span>
-                          )}
-                          <span className="text-[11px] text-brand-muted">
-                            • {product.images?.length || 1} image{product.images?.length !== 1 ? 's' : ''}
-                          </span>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    {/* Right: Quick Toggles & Action Buttons */}
-                    <div className="flex items-center gap-3 sm:gap-4 shrink-0 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-brand-border/60">
-                      
-                      {/* Availability toggle */}
-                      <button
-                        type="button"
-                        onClick={(e) => handleToggleAvailable(product, e)}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
-                          product.available
-                            ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
-                            : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
-                        }`}
-                        title="Click to toggle stock availability"
-                      >
-                        <span className={`w-1.5 h-1.5 rounded-full ${product.available ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                        <span>{product.available ? 'In Stock' : 'Out of Stock'}</span>
-                      </button>
-
-                      {/* Action Icon Buttons */}
-                      <div className="flex items-center gap-1.5">
-                        
-                        {/* View in Storefront */}
-                        <Link
-                          to={`/products/${product.slug}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 rounded-xl text-brand-muted hover:text-brand-navy hover:bg-brand-ivory transition-colors"
-                          title="View on public storefront"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Link>
-
-                        {/* Edit Listing */}
-                        <button
-                          type="button"
-                          onClick={() => handleEdit(product)}
-                          className="p-2 rounded-xl text-brand-muted hover:text-brand-rose hover:bg-brand-rose/10 transition-colors"
-                          title="Edit this listing"
-                        >
-                          <Edit3 className="w-4 h-4" />
-                        </button>
-
-                        {/* Delete Listing */}
-                        <button
-                          type="button"
-                          onClick={() => setDeleteConfirmProduct(product)}
-                          className="p-2 rounded-xl text-brand-muted hover:text-red-600 hover:bg-red-50 transition-colors"
-                          title="Delete this listing"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  </div>
-                );
-              })}
-            </div>
-          )}
-
+            )}
+          </div>
         </div>
+
+        {/* TAB 1: ORDERS & FULFILLMENT MANAGEMENT */}
+        {activeTab === 'orders' && (
+          <OrdersManagement />
+        )}
+
+        {/* TAB 2: PRODUCTS CATALOGUE MANAGEMENT */}
+        {activeTab === 'products' && (
+          <div className="space-y-8 animate-in fade-in duration-150">
+            {/* Page Title & Quick Actions */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <div className="inline-flex items-center gap-1.5 text-xs uppercase tracking-widest text-brand-rose font-semibold mb-1">
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Boutique Inventory &amp; Listings</span>
+                </div>
+                <h1 className="font-serif text-2xl sm:text-3xl text-brand-navy font-normal">
+                  Product Catalogue Management
+                </h1>
+                <p className="text-xs sm:text-sm text-brand-muted font-light mt-0.5">
+                  Manage listings across the 4 core categories: Ready made, Churidar materials, Sarees, and Kids wear.
+                </p>
+              </div>
+            </div>
+
+            {/* Analytics & Overview Metrics Cards */}
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+              
+              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
+                <div className="flex items-center justify-between text-brand-muted mb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold">Total Listings</span>
+                  <Layers className="w-4 h-4 text-brand-rose" />
+                </div>
+                <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{stats.total}</p>
+                <p className="text-[11px] text-brand-muted mt-1 font-light">
+                  2 per category across 4 categories
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
+                <div className="flex items-center justify-between text-brand-muted mb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold">In Stock</span>
+                  <PackageCheck className="w-4 h-4 text-emerald-600" />
+                </div>
+                <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{stats.inStock}</p>
+                <p className="text-[11px] text-emerald-700 font-light mt-1">
+                  Active for patron purchasing
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
+                <div className="flex items-center justify-between text-brand-muted mb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold">Featured Edit</span>
+                  <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                </div>
+                <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{stats.featured}</p>
+                <p className="text-[11px] text-brand-muted font-light mt-1">
+                  Spotlighted on storefront homepage
+                </p>
+              </div>
+
+              <div className="bg-white rounded-2xl p-4 sm:p-5 border border-brand-border shadow-2xs">
+                <div className="flex items-center justify-between text-brand-muted mb-2">
+                  <span className="text-xs uppercase tracking-wider font-semibold">Avg. Price</span>
+                  <Sparkles className="w-4 h-4 text-brand-champagne" />
+                </div>
+                <p className="font-serif text-2xl sm:text-3xl text-brand-navy">{formatINR(stats.avgPrice)}</p>
+                <p className="text-[11px] text-brand-muted font-light mt-1">
+                  Boutique handcrafted luxury
+                </p>
+              </div>
+
+            </div>
+
+            {/* Category Breakdown Badges */}
+            <div className="bg-white rounded-2xl p-4 border border-brand-border shadow-2xs flex flex-wrap items-center justify-between gap-3">
+              <span className="text-xs font-semibold text-brand-navy uppercase tracking-wider">
+                Catalogue Categories:
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                {VALID_CATEGORIES.map((catKey) => (
+                  <span
+                    key={catKey}
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs bg-brand-ivory border border-brand-border font-medium text-brand-navy"
+                  >
+                    <span>{CATEGORY_NAMES[catKey]}</span>
+                    <span className="px-1.5 py-0.2 rounded-full bg-brand-navy text-brand-champagne text-[10px] font-bold">
+                      {stats.catCounts[catKey] || 0}
+                    </span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Filter Bar & Search Controls */}
+            <div className="bg-white rounded-2xl p-4 border border-brand-border shadow-2xs space-y-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
+                
+                {/* Search Input */}
+                <div className="relative flex-1 max-w-md">
+                  <Search className="w-4 h-4 text-brand-muted absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search listings by title, fabric, or tag..."
+                    className="w-full pl-10 pr-4 py-2 bg-brand-ivory/40 border border-brand-border rounded-xl text-xs sm:text-sm text-brand-navy placeholder-brand-muted/60 focus:outline-none focus:border-brand-rose"
+                  />
+                  {searchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setSearchQuery('')}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-brand-muted hover:text-brand-navy"
+                    >
+                      Clear
+                    </button>
+                  )}
+                </div>
+
+                {/* Quick stock status filter */}
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-xs text-brand-muted font-medium">Stock:</span>
+                  <select
+                    value={stockFilter}
+                    onChange={(e) => setStockFilter(e.target.value)}
+                    className="px-3 py-1.5 bg-brand-ivory/50 border border-brand-border rounded-xl text-xs text-brand-navy focus:outline-none focus:border-brand-rose"
+                  >
+                    <option value="all">All Items</option>
+                    <option value="in-stock">In Stock Only</option>
+                    <option value="out-of-stock">Out of Stock</option>
+                  </select>
+                </div>
+
+              </div>
+
+              {/* Category Tabs */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-1 border-t border-brand-border/60">
+                <button
+                  type="button"
+                  onClick={() => setSelectedCategory('all')}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
+                    selectedCategory === 'all'
+                      ? 'bg-brand-navy text-brand-champagne shadow-2xs'
+                      : 'bg-brand-ivory/60 text-brand-navy hover:bg-brand-ivory border border-brand-border'
+                  }`}
+                >
+                  All Categories ({products.length})
+                </button>
+
+                {VALID_CATEGORIES.map((catKey) => (
+                  <button
+                    key={catKey}
+                    type="button"
+                    onClick={() => setSelectedCategory(catKey)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium whitespace-nowrap transition-colors ${
+                      selectedCategory === catKey
+                        ? 'bg-brand-navy text-brand-champagne shadow-2xs'
+                        : 'bg-brand-ivory/60 text-brand-navy hover:bg-brand-ivory border border-brand-border'
+                    }`}
+                  >
+                    {CATEGORY_NAMES[catKey]} ({stats.catCounts[catKey] || 0})
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Listings Table / Cards */}
+            <div className="bg-white rounded-3xl border border-brand-border shadow-luxury overflow-hidden">
+              
+              <div className="px-6 py-4 border-b border-brand-border bg-brand-ivory/40 flex items-center justify-between">
+                <p className="text-xs uppercase tracking-wider font-semibold text-brand-navy">
+                  Showing {filteredProducts.length} of {products.length} Products
+                </p>
+                <button
+                  type="button"
+                  onClick={() => refreshProducts()}
+                  className="inline-flex items-center gap-1.5 text-xs text-brand-rose hover:text-brand-navy transition-colors font-medium"
+                >
+                  <RefreshCw className="w-3.5 h-3.5" />
+                  <span>Refresh Listings</span>
+                </button>
+              </div>
+
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-16 px-4">
+                  <div className="w-14 h-14 rounded-2xl bg-brand-ivory border border-brand-border flex items-center justify-center mx-auto mb-3 text-brand-muted">
+                    <Search className="w-6 h-6" />
+                  </div>
+                  <h3 className="font-serif text-lg text-brand-navy font-normal mb-1">
+                    No matching boutique listings found
+                  </h3>
+                  <p className="text-xs text-brand-muted max-w-sm mx-auto mb-4 font-light">
+                    Try adjusting your search keywords or category filters, or add a new handcrafted listing.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleAddNew}
+                    className="px-4 py-2 bg-brand-navy text-brand-champagne rounded-xl text-xs uppercase tracking-wider font-semibold"
+                  >
+                    + Add First Listing
+                  </button>
+                </div>
+              ) : (
+                <div className="divide-y divide-brand-border">
+                  {filteredProducts.map((product) => {
+                    const primaryImage = product.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=600&q=80';
+
+                    return (
+                      <div
+                        key={product.id}
+                        className="p-4 sm:p-5 hover:bg-brand-ivory/30 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
+                      >
+                        
+                        {/* Left: Thumbnail & Details */}
+                        <div className="flex items-start gap-4 flex-1 min-w-0">
+                          
+                          {/* Thumbnail with WebP indicator */}
+                          <div className="relative w-16 h-20 sm:w-20 sm:h-24 rounded-xl overflow-hidden bg-brand-ivory border border-brand-border shrink-0 shadow-2xs">
+                            <img
+                              src={primaryImage}
+                              alt={product.name}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute bottom-1 right-1 text-[9px] font-mono font-bold bg-black/75 text-white px-1.5 py-0.2 rounded">
+                              WEBP
+                            </span>
+                          </div>
+
+                          {/* Text Details */}
+                          <div className="min-w-0 flex-1 space-y-1">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-brand-blush/40 text-brand-rose border border-brand-rose/20">
+                                {product.categoryName || CATEGORY_NAMES[product.category] || product.category}
+                              </span>
+
+                              {product.newArrival && (
+                                <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-brand-champagne/30 text-brand-navy border border-brand-champagne/40">
+                                  New Arrival
+                                </span>
+                              )}
+
+                              {product.featured && (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200">
+                                  <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+                                  <span>Featured</span>
+                                </span>
+                              )}
+                            </div>
+
+                            <h3 className="font-serif text-base text-brand-navy font-normal truncate">
+                              {product.name}
+                            </h3>
+
+                            <p className="text-xs text-brand-muted truncate font-light">
+                              {product.fabric || 'Artisanal Handcraft'} • {product.occasion || 'Festive'}
+                            </p>
+
+                            <div className="flex items-center gap-2 pt-0.5">
+                              <span className="text-sm font-semibold text-brand-navy">
+                                {formatINR(product.price)}
+                              </span>
+                              {product.originalPrice && product.originalPrice > product.price && (
+                                <span className="text-xs text-brand-muted line-through">
+                                  {formatINR(product.originalPrice)}
+                                </span>
+                              )}
+                              <span className="text-[11px] text-brand-muted">
+                                • {product.images?.length || 1} image{product.images?.length !== 1 ? 's' : ''}
+                              </span>
+                            </div>
+                          </div>
+
+                        </div>
+
+                        {/* Right: Quick Toggles & Action Buttons */}
+                        <div className="flex items-center gap-3 sm:gap-4 shrink-0 w-full sm:w-auto justify-between sm:justify-end border-t sm:border-t-0 pt-3 sm:pt-0 border-brand-border/60">
+                          
+                          {/* Availability toggle */}
+                          <button
+                            type="button"
+                            onClick={(e) => handleToggleAvailable(product, e)}
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-colors ${
+                              product.available
+                                ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-red-50 text-red-700 border-red-200 hover:bg-red-100'
+                            }`}
+                            title="Click to toggle stock availability"
+                          >
+                            <span className={`w-1.5 h-1.5 rounded-full ${product.available ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                            <span>{product.available ? 'In Stock' : 'Out of Stock'}</span>
+                          </button>
+
+                          {/* Action Icon Buttons */}
+                          <div className="flex items-center gap-1.5">
+                            
+                            {/* View in Storefront */}
+                            <Link
+                              to={`/products/${product.slug}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="p-2 rounded-xl text-brand-muted hover:text-brand-navy hover:bg-brand-ivory transition-colors"
+                              title="View on public storefront"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Link>
+
+                            {/* Edit Listing */}
+                            <button
+                              type="button"
+                              onClick={() => handleEdit(product)}
+                              className="p-2 rounded-xl text-brand-muted hover:text-brand-rose hover:bg-brand-rose/10 transition-colors"
+                              title="Edit this listing"
+                            >
+                              <Edit3 className="w-4 h-4" />
+                            </button>
+
+                            {/* Delete Listing */}
+                            <button
+                              type="button"
+                              onClick={() => setDeleteConfirmProduct(product)}
+                              className="p-2 rounded-xl text-brand-muted hover:text-red-600 hover:bg-red-50 transition-colors"
+                              title="Delete this listing"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+
+                          </div>
+
+                        </div>
+
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+            </div>
+          </div>
+        )}
 
       </main>
 

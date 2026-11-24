@@ -8,7 +8,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useToast } from '../context/ToastContext';
-import { getCustomerOrders } from '../services/orderService';
+import { getCustomerOrders, ORDER_STATUSES } from '../services/orderService';
 import { formatINR } from '../data/products';
 import Breadcrumbs from '../components/Breadcrumbs';
 
@@ -148,23 +148,20 @@ export default function Account() {
 
   const getStatusBadge = (status) => {
     const s = (status || 'confirmed').toLowerCase();
-    if (s === 'delivered') {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-100 text-emerald-800">
-          <CheckCircle2 className="w-3 h-3" /> Delivered
-        </span>
-      );
-    }
-    if (s === 'shipped') {
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-blue-100 text-blue-800">
-          <Truck className="w-3 h-3" /> In Transit
-        </span>
-      );
-    }
+    const info = ORDER_STATUSES[s] || {
+      label: s.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()),
+      badgeClass: 'bg-amber-100 text-amber-800 border-amber-200'
+    };
+
+    let Icon = Clock;
+    if (s === 'delivered') Icon = CheckCircle2;
+    else if (s === 'dispatched' || s === 'out_for_delivery' || s === 'shipped') Icon = Truck;
+    else if (s === 'cancelled') Icon = AlertCircle;
+
     return (
-      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-100 text-amber-800">
-        <Clock className="w-3 h-3" /> Order Confirmed
+      <span className={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${info.badgeClass}`}>
+        <Icon className="w-3 h-3" />
+        <span>{info.label}</span>
       </span>
     );
   };
@@ -403,6 +400,26 @@ export default function Account() {
                               ))}
                             </div>
 
+                            {/* Tracking info if dispatched */}
+                            {latest.tracking_number && (
+                              <div className="mt-2 bg-purple-50/70 p-2.5 rounded-lg border border-purple-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                                <div className="flex items-center gap-2 text-purple-900 font-medium">
+                                  <Truck className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                                  <span>{latest.courier_partner || 'Courier'}: <strong className="font-mono">{latest.tracking_number}</strong></span>
+                                </div>
+                                {latest.tracking_url && (
+                                  <a
+                                    href={latest.tracking_url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-1 text-purple-700 hover:text-purple-950 font-semibold underline text-[11px]"
+                                  >
+                                    Track <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                )}
+                              </div>
+                            )}
+
                             <div className="flex items-center justify-between mt-3 pt-3 border-t border-brand-border/40 text-xs">
                               <span className="text-brand-muted">Total: <strong className="text-brand-navy">{formatINR(latest.grand_total)}</strong></span>
                               <button
@@ -539,6 +556,28 @@ export default function Account() {
                             </div>
                           ))}
                         </div>
+
+                        {/* Courier & Tracking Bar if dispatched */}
+                        {order.tracking_number && (
+                          <div className="bg-purple-50/70 px-4 py-2 border-t border-purple-100 flex flex-wrap items-center justify-between gap-2 text-xs">
+                            <div className="flex items-center gap-2 text-purple-900 font-medium">
+                              <Truck className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                              <span>
+                                {order.courier_partner || 'Courier'}: <strong className="font-mono text-brand-navy">{order.tracking_number}</strong>
+                              </span>
+                            </div>
+                            {order.tracking_url && (
+                              <a
+                                href={order.tracking_url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-purple-700 hover:text-purple-950 font-semibold underline text-[11px]"
+                              >
+                                Track Shipment <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        )}
 
                         {/* Shipping Destination Footer */}
                         <div className="bg-brand-ivory/30 px-4 py-2.5 border-t border-brand-border/40 text-[11px] text-brand-muted flex items-center justify-between">
@@ -872,6 +911,55 @@ export default function Account() {
                   Phone: {selectedOrder.customer_phone || 'Not provided'}
                 </p>
               </div>
+
+              {/* Shipment & Tracking Information */}
+              {(selectedOrder.tracking_number || selectedOrder.courier_partner || selectedOrder.dispatched_at || selectedOrder.notes) && (
+                <div className="pt-2">
+                  <h4 className="text-xs uppercase tracking-luxury text-brand-rose font-semibold mb-1 flex items-center gap-1.5">
+                    <Truck className="w-3.5 h-3.5" /> Shipment & Tracking
+                  </h4>
+                  <div className="bg-purple-50/60 p-3.5 rounded-xl border border-purple-100 space-y-2 text-xs">
+                    {selectedOrder.courier_partner && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-brand-muted">Courier Partner:</span>
+                        <span className="font-semibold text-brand-navy">{selectedOrder.courier_partner}</span>
+                      </div>
+                    )}
+                    {selectedOrder.tracking_number && (
+                      <div className="flex justify-between items-center">
+                        <span className="text-brand-muted">AWB / Tracking Number:</span>
+                        <span className="font-mono font-bold text-brand-navy">{selectedOrder.tracking_number}</span>
+                      </div>
+                    )}
+                    {selectedOrder.dispatched_at && (
+                      <div className="flex justify-between items-center text-[11px]">
+                        <span className="text-brand-muted">Dispatched At:</span>
+                        <span className="text-brand-text">
+                          {new Date(selectedOrder.dispatched_at).toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'short' })}
+                        </span>
+                      </div>
+                    )}
+                    {selectedOrder.notes && (
+                      <div className="pt-1.5 border-t border-purple-200/50 text-[11px] text-brand-muted">
+                        <span className="font-medium text-brand-navy">Dispatch Note: </span>{selectedOrder.notes}
+                      </div>
+                    )}
+                    {selectedOrder.tracking_url && (
+                      <div className="pt-1.5">
+                        <a
+                          href={selectedOrder.tracking_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand-navy text-brand-champagne hover:bg-brand-navy-light text-xs font-medium transition-colors"
+                        >
+                          <span>Open Courier Tracking Page</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Totals */}
               <div className="pt-3 border-t border-brand-border space-y-1.5 text-xs">

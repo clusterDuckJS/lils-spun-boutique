@@ -219,11 +219,80 @@ INSERT INTO public.products (
 );
 `;
 
+export const SQL_ORDERS_MIGRATION_SCRIPT = `-- ==============================================================================
+-- LILS SPUN BOUTIQUE - ORDERS RLS & FULFILLMENT UPDATE POLICY
+-- ==============================================================================
+-- Run this script in your Supabase SQL Editor:
+-- https://supabase.com/dashboard/project/_/sql
+
+-- 1. Ensure Table Structure & Columns exist
+CREATE TABLE IF NOT EXISTS public.orders (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_ref TEXT UNIQUE NOT NULL,
+    customer_name TEXT NOT NULL,
+    customer_email TEXT NOT NULL,
+    customer_phone TEXT,
+    shipping_address TEXT NOT NULL,
+    city TEXT NOT NULL,
+    state TEXT NOT NULL,
+    pincode TEXT NOT NULL,
+    payment_method TEXT DEFAULT 'upi',
+    subtotal NUMERIC NOT NULL DEFAULT 0,
+    shipping_fee NUMERIC NOT NULL DEFAULT 0,
+    grand_total NUMERIC NOT NULL DEFAULT 0,
+    items JSONB NOT NULL DEFAULT '[]'::jsonb,
+    status TEXT NOT NULL DEFAULT 'confirmed',
+    payment_status TEXT NOT NULL DEFAULT 'pending',
+    phonepe_order_id TEXT,
+    transaction_id TEXT,
+    payment_details JSONB DEFAULT '{}'::jsonb,
+    created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL,
+    updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Ensure payment_details JSONB column exists for tracking metadata
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+        AND table_name = 'orders' 
+        AND column_name = 'payment_details'
+    ) THEN
+        ALTER TABLE public.orders ADD COLUMN payment_details JSONB DEFAULT '{}'::jsonb;
+    END IF;
+END $$;
+
+-- 2. Enable Row Level Security
+ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
+
+-- 3. Policy: Public can insert orders (Checkout)
+DROP POLICY IF EXISTS "Public can insert orders" ON public.orders;
+CREATE POLICY "Public can insert orders" ON public.orders
+    FOR INSERT WITH CHECK (true);
+
+-- 4. Policy: View orders
+DROP POLICY IF EXISTS "Public can view orders" ON public.orders;
+CREATE POLICY "Public can view orders" ON public.orders
+    FOR SELECT USING (true);
+
+-- 5. Policy: Admin full write/update access (Fulfillment, Dispatched, Delivered, Tracking)
+DROP POLICY IF EXISTS "Allow admin all on orders" ON public.orders;
+CREATE POLICY "Allow admin all on orders" ON public.orders
+    FOR ALL USING (true) WITH CHECK (true);
+
+-- Grant privileges to anon and authenticated roles
+GRANT ALL ON TABLE public.orders TO anon, authenticated, service_role;
+`;
+
 export default function DatabaseSyncModal({ isOpen, onClose, onResetDefaults }) {
+  const [activeTab, setActiveTab] = useState('orders'); // 'orders' or 'products'
   const [copied, setCopied] = useState(false);
 
+  const activeScript = activeTab === 'orders' ? SQL_ORDERS_MIGRATION_SCRIPT : SQL_MIGRATION_SCRIPT;
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(SQL_MIGRATION_SCRIPT);
+    navigator.clipboard.writeText(activeScript);
     setCopied(true);
     setTimeout(() => setCopied(false), 3000);
   };
@@ -248,7 +317,7 @@ export default function DatabaseSyncModal({ isOpen, onClose, onResetDefaults }) 
                 </span>
               </h2>
               <p className="text-[11px] text-brand-champagne/80">
-                1-click SQL script to update RLS permissions and sync the 8 products.
+                1-click SQL scripts for Products Catalogue and Orders Fulfillment RLS policies.
               </p>
             </div>
           </div>
@@ -261,6 +330,32 @@ export default function DatabaseSyncModal({ isOpen, onClose, onResetDefaults }) 
           </button>
         </div>
 
+        {/* Script Selection Tabs */}
+        <div className="flex border-b border-brand-border bg-brand-ivory/50 px-6 pt-3 gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveTab('orders')}
+            className={`pb-3 px-3 text-xs font-semibold border-b-2 transition-all ${
+              activeTab === 'orders'
+                ? 'border-brand-navy text-brand-navy font-bold'
+                : 'border-transparent text-brand-muted hover:text-brand-navy'
+            }`}
+          >
+            Orders Fulfillment RLS (Status &amp; Tracking)
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('products')}
+            className={`pb-3 px-3 text-xs font-semibold border-b-2 transition-all ${
+              activeTab === 'products'
+                ? 'border-brand-navy text-brand-navy font-bold'
+                : 'border-transparent text-brand-muted hover:text-brand-navy'
+            }`}
+          >
+            Products Catalogue RLS &amp; 8 Items
+          </button>
+        </div>
+
         {/* Content */}
         <div className="overflow-y-auto p-6 space-y-5 flex-1 text-xs text-brand-navy">
           <div className="p-4 rounded-2xl bg-amber-50/80 border border-amber-200/80 flex items-start gap-3">
@@ -268,7 +363,15 @@ export default function DatabaseSyncModal({ isOpen, onClose, onResetDefaults }) 
             <div>
               <p className="font-semibold text-amber-900">How Supabase RLS Works</p>
               <p className="text-amber-800 leading-relaxed mt-0.5">
-                Supabase enforces Row Level Security (RLS). By default, only <code className="bg-amber-100/80 px-1 py-0.5 rounded">SELECT</code> was allowed. Running this script creates the policies for <code className="bg-amber-100/80 px-1 py-0.5 rounded">INSERT</code>, <code className="bg-amber-100/80 px-1 py-0.5 rounded">UPDATE</code>, and <code className="bg-amber-100/80 px-1 py-0.5 rounded">DELETE</code>, allowing you to add, edit, or remove listings directly from this admin interface!
+                {activeTab === 'orders' ? (
+                  <>
+                    By default, public access only permits checkout order insertions. Running this Orders SQL script allows your admin dashboard to update order status (<code className="bg-amber-100/80 px-1 py-0.5 rounded">dispatched</code>, <code className="bg-amber-100/80 px-1 py-0.5 rounded">delivered</code>, etc.), courier partner, and tracking numbers in Supabase.
+                  </>
+                ) : (
+                  <>
+                    Supabase enforces Row Level Security (RLS). Running this script creates policies for <code className="bg-amber-100/80 px-1 py-0.5 rounded">INSERT</code>, <code className="bg-amber-100/80 px-1 py-0.5 rounded">UPDATE</code>, and <code className="bg-amber-100/80 px-1 py-0.5 rounded">DELETE</code> on products, allowing you to add, edit, or delete listings directly.
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -277,7 +380,7 @@ export default function DatabaseSyncModal({ isOpen, onClose, onResetDefaults }) 
             <div className="flex items-center gap-2">
               <Terminal className="w-4 h-4 text-brand-rose" />
               <span className="font-semibold uppercase tracking-wider text-[11px]">
-                PostgreSQL SQL Migration Snippet
+                {activeTab === 'orders' ? 'Orders RLS SQL Migration' : 'Products & Catalog SQL Migration'}
               </span>
             </div>
             <button
@@ -292,34 +395,38 @@ export default function DatabaseSyncModal({ isOpen, onClose, onResetDefaults }) 
 
           <div className="relative">
             <pre className="p-4 rounded-2xl bg-brand-navy text-brand-ivory font-mono text-[11px] leading-relaxed max-h-60 overflow-y-auto border border-brand-border">
-              {SQL_MIGRATION_SCRIPT}
+              {activeScript}
             </pre>
           </div>
 
-          <div className="p-4 rounded-2xl bg-brand-ivory border border-brand-border flex items-center justify-between gap-4">
-            <div>
-              <p className="font-semibold text-brand-navy">Reset Local State</p>
-              <p className="text-brand-muted text-[11px]">
-                Reset any temporary offline changes back to the 8 boutique products.
-              </p>
+          {activeTab === 'products' && (
+            <div className="p-4 rounded-2xl bg-brand-ivory border border-brand-border flex items-center justify-between gap-4">
+              <div>
+                <p className="font-semibold text-brand-navy">Reset Local State</p>
+                <p className="text-brand-muted text-[11px]">
+                  Reset any temporary offline changes back to the 8 boutique products.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onResetDefaults();
+                  onClose();
+                }}
+                className="px-4 py-2 border border-brand-border hover:border-brand-rose text-brand-navy hover:text-brand-rose text-xs font-semibold rounded-xl bg-white transition-colors shrink-0"
+              >
+                Reset to 8 Defaults
+              </button>
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                onResetDefaults();
-                onClose();
-              }}
-              className="px-4 py-2 border border-brand-border hover:border-brand-rose text-brand-navy hover:text-brand-rose text-xs font-semibold rounded-xl bg-white transition-colors shrink-0"
-            >
-              Reset to 8 Defaults
-            </button>
-          </div>
+          )}
         </div>
 
         {/* Footer */}
         <div className="px-6 py-4 bg-brand-ivory border-t border-brand-border flex items-center justify-between shrink-0">
           <p className="text-[11px] text-brand-muted font-light">
-            File also saved on disk at: <code className="bg-brand-blush/30 px-1 py-0.5 rounded text-brand-navy">supabase_update_categories_and_products.sql</code>
+            File on disk: <code className="bg-brand-blush/30 px-1 py-0.5 rounded text-brand-navy">
+              {activeTab === 'orders' ? 'supabase_orders_update_policy.sql' : 'supabase_update_categories_and_products.sql'}
+            </code>
           </p>
           <button
             type="button"
